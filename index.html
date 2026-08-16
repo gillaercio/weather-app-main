@@ -72,24 +72,52 @@
   </header>
 
   <main class="weather-app-main">
-    <section>
-      <div>
-        Feels like
-        <!-- Insert temperature here -->
+    <section class="current-weather">
+      <div class="current-weather__display">
+        <div class="current-location">
+          <span class="current-location__city">São José do Egito</span>
+          <span class="current-location__country">Brazil</span>
+        </div>
+        <time datetime="2026-08-16" class="current-date">
+          Sunday, August 16, 2026
+        </time>
+        <div class="current-temperature">
+          <img src="assets/images/icon-sunny.webp" alt="" class="current-temperature__icon">
+          <span class="current-temperature__value">20°</span>
+        </div>
+      </div>
 
-        Humidity
-        <!-- Insert humidity here -->
+      <div class="current-result">
+        <span class="current-result__label">Feels like</span>
+        <span class="current-result__value">18°<!-- Insert temperature here --></span>
+      </div>
 
-        Wind
-        <!-- Insert wind here -->
+      <div class="current-result">
+        <span class="current-result__label">Humidity</span>
+        <span class="current-result__value">46%<!-- Insert humidity here --></span>
+      </div>
+
+      <div class="current-result">
+        <span class="current-result__label">Wind</span>
+        <span class="current-result__value">14km/h<!-- Insert wind here --></span>
+      </div>
         
-        Precipitation
-        <!-- Insert precipitation here -->
+      <div class="current-result">
+        <span class="current-result__label">Precipitation</span>
+        <span class="current-result__value">0 mm<!-- Insert precipitation here --></span>
       </div>
     </section>
 
-    <section>
-      Daily forecast
+    <section class="daily-forecast">
+      <h2 class="daily-forecast__title">Daily forecast</h2>
+      <div class="daily-forecast__display">
+        <span class="daily-forecast__day">Mon</span>
+        <img src="assets/images/icon-sunny.webp" alt="" class="daily-forecast__icon">
+        <div class="daily-forecast__temperature">
+          <span class="daily-forecast__temperature-max">24°</span>
+          <span class="daily-forecast__temperature-min">18°</span>
+        </div>
+      </div>
       <!-- Insert daily forecast for the next 7 days here -->
     </section>
 
