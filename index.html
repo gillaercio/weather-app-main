@@ -2,65 +2,101 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- displays site properly based on user's device -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon-32x32.png">
   
   <title>Frontend Mentor | Weather app</title>
-
-  <!-- Feel free to remove these styles or customise in your own stylesheet 👍 -->
-  <style>
-    .attribution { font-size: 0.6875rem; text-align: center; }
-    .attribution a { color: hsl(228, 45%, 44%); }
-  </style>
 </head>
 <body>
 
-  Units
+  <header class="header">
+    <div class="header__top">
+      <div class="logo">
+        <img src="assets/images/logo.svg" alt="" class="logo__img">        
+        <span class="logo__info">Weather Now</span>
+      </div>
+      
+      <div class="units">
+        <button type="button" class="units__button" aria-expanded="false" aria-controls="units-menu">
+          <img src="assets/images/icon-units.svg" alt="" class="units__icon-unit">
+          <span class="units__span">Units</span>
+          <img src="assets/images/icon-dropdown.svg" alt="" class="units__icon-dropdown">
+        </button>
 
-  Switch to Imperial/Metric
+        <div id="units-menu" class="units__menu" hidden>
+          <button type="button" class="units__toggle">Switch to Imperial</button>
+          <fieldset class="units__fieldset">
+            <legend class="units__title">Temperature</legend>
+            <label>
+              <input type="radio" name="temperature" value="celsius" checked>Celsius (°C)
+            </label>
 
-  Temperature
+            <label>
+              <input type="radio" name="temperature" value="fahrenheit">Fahrenheit (°F)
+            </label>
+          </fieldset>
 
-  Celsius (°C)
-  Fahrenheit (°F)
+          <fieldset class="units__fieldset">
+            <legend class="units__title">Wind Speed</legend>
+            <label>
+              <input type="radio" name="wind" value="km/h" checked>km/h
+            </label>
 
-  Wind Speed
+            <label>
+              <input type="radio" name="wind" value="mph">mph
+            </label>
+          </fieldset>
 
-  km/h
-  mph
+          <fieldset class="units__fieldset">
+            <legend class="units__title">Precipitation</legend>
+              <label>
+                <input type="radio" name="precipitation" value="mm" checked>Millimeters (mm)
+              </label>
 
-  Precipitation
+              <label>
+                <input type="radio" name="precipitation" value="in">Inches (in)
+              </label>
+          </fieldset>
+        </div>
+      </div>
+    </div>
 
-  Millimeters (mm)
-  Inches (in)
+    <h1 class="header__title">How's the sky looking today?</h1>
 
-  How's the sky looking today?
+    <form action="" class="form">
+      <label for="city" class="visually-hidden">Search for a city</label>
+      <input type="text" id="city" name="city" placeholder="Search for a city, e.g., New York">
+      <button type="submit" class="button">Search</button>
+    </form>
+  </header>
 
-  Search for a city, e.g., New York
-  Search
+  <main class="weather-app-main">
+    <section>
+      <div>
+        Feels like
+        <!-- Insert temperature here -->
 
-  Feels like
-  <!-- Insert temperature here -->
+        Humidity
+        <!-- Insert humidity here -->
 
-  Humidity
-  <!-- Insert humidity here -->
+        Wind
+        <!-- Insert wind here -->
+        
+        Precipitation
+        <!-- Insert precipitation here -->
+      </div>
+    </section>
 
-  Wind
-  <!-- Insert wind here -->   
-  
-  Precipitation
-  <!-- Insert precipitation here -->
+    <section>
+      Daily forecast
+      <!-- Insert daily forecast for the next 7 days here -->
+    </section>
 
-  Daily forecast
-  <!-- Insert daily forecast for the next 7 days here -->
-
-  Hourly forecast
-  <!-- Insert hourly forecast for the selected day here -->
-
-  <footer class="attribution">
-    Challenge by <a href="https://www.frontendmentor.io?ref=challenge">Frontend Mentor</a>. 
-    Coded by <a href="#">Your Name Here</a>.
-  </footer>
+    <aside>
+      Hourly forecast
+      <!-- Insert hourly forecast for the selected day here -->
+    </aside>
+  </main>
 </body>
 </html>
