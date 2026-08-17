@@ -78,9 +78,11 @@
           <span class="current-location__city">São José do Egito</span>
           <span class="current-location__country">Brazil</span>
         </div>
+
         <time datetime="2026-08-16" class="current-date">
           Sunday, August 16, 2026
         </time>
+
         <div class="current-temperature">
           <img src="assets/images/icon-sunny.webp" alt="" class="current-temperature__icon">
           <span class="current-temperature__value">20°</span>
@@ -89,42 +91,61 @@
 
       <div class="current-result">
         <span class="current-result__label">Feels like</span>
-        <span class="current-result__value">18°<!-- Insert temperature here --></span>
+        <span class="current-result__value">18°</span>
       </div>
 
       <div class="current-result">
         <span class="current-result__label">Humidity</span>
-        <span class="current-result__value">46%<!-- Insert humidity here --></span>
+        <span class="current-result__value">46%</span>
       </div>
 
       <div class="current-result">
         <span class="current-result__label">Wind</span>
-        <span class="current-result__value">14km/h<!-- Insert wind here --></span>
+        <span class="current-result__value">14km/h</span>
       </div>
         
       <div class="current-result">
         <span class="current-result__label">Precipitation</span>
-        <span class="current-result__value">0 mm<!-- Insert precipitation here --></span>
+        <span class="current-result__value">0 mm</span>
       </div>
     </section>
 
     <section class="daily-forecast">
       <h2 class="daily-forecast__title">Daily forecast</h2>
-      <div class="daily-forecast__display">
-        <span class="daily-forecast__day">Mon</span>
-        <img src="assets/images/icon-sunny.webp" alt="" class="daily-forecast__icon">
-        <div class="daily-forecast__temperature">
-          <span class="daily-forecast__temperature-max">24°</span>
-          <span class="daily-forecast__temperature-min">18°</span>
-        </div>
-      </div>
-      <!-- Insert daily forecast for the next 7 days here -->
+
+      <ul class="daily-forecast__list">
+        <li class="daily-forecast__item">
+          <span class="daily-forecast__day">Mon</span>
+          <img src="assets/images/icon-sunny.webp" alt="" class="daily-forecast__icon">
+          <div class="daily-forecast__temperature">
+            <span class="daily-forecast__temperature-max">24°</span>
+            <span class="daily-forecast__temperature-min">18°</span>
+          </div>
+        </li>
+      </ul>
     </section>
 
-    <aside>
-      Hourly forecast
-      <!-- Insert hourly forecast for the selected day here -->
-    </aside>
+    <section class="hourly-forecast">
+      <div class="hourly-forecast__display">
+        <h2 class="hourly-forecast__title">Hourly forecast</h2>
+
+        <button type="button" class="hourly-forecast__button" aria-expanded="false" aria-controls="hourly-day-menu">
+          <span class="hourly-forecast__day">Tuesday</span>
+          <img src="assets/images/icon-dropdown.svg" alt="" class="hourly-forecast__icon-dropdown">
+        </button>
+      </div>
+
+      <div id="hourly-day-menu" hidden>
+      </div>
+
+      <ul class="hourly-forecast__list">
+        <li class="hourly-forecast__item">
+          <img src="assets/images/icon-overcast.webp" alt="" class="hourly-forecast__icon">
+          <span class="hourly-forecast__time">3 PM</span>
+          <span class="hourly-forecast__temperature">68°</span>
+        </li>
+      </ul>
+    </section>
   </main>
 </body>
 </html>
