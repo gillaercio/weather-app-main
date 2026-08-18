@@ -1,0 +1,89 @@
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+@font-face {
+  font-display: swap;
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 300;
+  src: url('../fonts/dm-sans-v17-latin-300.woff2') format('woff2');
+}
+
+@font-face {
+  font-display: swap;
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 500;
+  src: url('../fonts/dm-sans-v17-latin-500.woff2') format('woff2');
+}
+
+@font-face {
+  font-display: swap;
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 600;
+  src: url('../fonts/dm-sans-v17-latin-600.woff2') format('woff2');
+}
+
+@font-face {
+  font-display: swap;
+  font-family: 'DM Sans';
+  font-style: italic;
+  font-weight: 600;
+  src: url('../fonts/dm-sans-v17-latin-600italic.woff2') format('woff2');
+}
+
+@font-face {
+  font-display: swap;
+  font-family: 'DM Sans';
+  font-style: normal;
+  font-weight: 700;
+  src: url('../fonts/dm-sans-v17-latin-700.woff2') format('woff2');
+}
+
+@font-face {
+  font-display: swap;
+  font-family: 'Bricolage Grotesque';
+  font-style: normal;
+  font-weight: 700;
+  src: url('../fonts/bricolage-grotesque-v9-latin-700.woff2') format('woff2');
+}
+
+:root {
+  --neutral-900: hsl(243, 96%, 9%);
+  --neutral-800: hsl(243, 27%, 20%);
+  --neutral-700: hsl(243, 23%, 24%);
+  --neutral-600: hsl(243, 23%, 30%);
+  --neutral-300: hsl(240, 6%, 70%);
+  --neutral-200: hsl(250, 6%, 84%);
+  --neutral-0: hsl(0, 0%, 100%);
+
+  --orange-500: hsl(28, 100%, 52%);
+
+  --blue-700: hsl(248, 70%, 36%);
+  --blue-500: hsl(233, 67%, 56%);
+
+  --dm-sans: "DM Sans", sans-serif;
+  --bricolage-grotesque: "Bricolage Grotesque", sans-serif;
+
+  --txt-xs: 1.2rem;
+  --txt-sm: 1.4rem;
+  --txt-md: 1.6rem;
+  --txt-lg: 1.8rem;
+  --txt-xl: 2.4rem;
+
+  --fw-medium: 500;
+  --fw-bold: 700;
+
+  --line-height-sm: 1.2;
+  --line-height-md: 1.5;
+}
