@@ -78,8 +78,10 @@ html {
   --txt-xs: 1.2rem;
   --txt-sm: 1.4rem;
   --txt-md: 1.6rem;
-  --txt-lg: 2rem;
-  --txt-xl: 2.4rem;
+  --txt-lg: 1.8rem;
+  --txt-xl: 2rem;
+  --txt-2xl: 2.2rem;
+  --txt-3xl: 2.4rem;
 
   --fw-light: 300;
   --fw-medium: 500;
