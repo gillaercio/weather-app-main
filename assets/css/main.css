@@ -192,6 +192,7 @@ label:has(input[type="radio"]:checked) {
   height: 28.8rem;
   background-image: url("/assets/images/bg-today-small.svg");
   background-repeat: no-repeat;
+  background-size: cover;
   border-radius: 0.6rem;
 }
 
@@ -373,4 +374,61 @@ label:has(input[type="radio"]:checked) {
 .hourly-forecast__temperature {
   font-size: var(--txt-xs);
   color: var(--neutral-200);
+}
+
+@media screen and (min-width: 700px) {
+  .header,
+  .weather-app-main {
+    display: flex;
+    width: min(100%, 70rem);
+    padding: 1.5rem;
+  }
+
+  .log__img {
+    width: 14rem;
+  }
+
+  .units__menu {
+    display: none;
+  }
+
+  .header__title {
+    font-size: 3rem;
+  }
+
+  .form {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  #city {
+    width: 60%;
+  }
+
+  .button {
+    width: 8rem;
+  }
+
+  .weather-app-main {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+  }
+
+  .left-side {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    flex: 1;
+  }
+
+  .daily-forecast__list {
+    gap: 1.6rem;
+  }
+
+  .hourly-forecast {
+    width: 30rem;
+    height: 100%;
+  }
 }
