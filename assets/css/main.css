@@ -154,9 +154,11 @@ label:has(input[type="radio"]:checked) {
 }
 
 #city {
+  display: flex;
+  align-items: center;
   background-image: url("/assets/images/icon-search.svg");
   background-repeat: no-repeat;
-  background-position: center left 20px;
+  background-position: 3% 50%;
   background-color: var(--neutral-800);
   padding-inline: 6rem;
 }
@@ -384,7 +386,7 @@ label:has(input[type="radio"]:checked) {
     padding: 1.5rem;
   }
 
-  .log__img {
+  .logo__img {
     width: 14rem;
   }
 
@@ -430,5 +432,108 @@ label:has(input[type="radio"]:checked) {
   .hourly-forecast {
     width: 30rem;
     height: 100%;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .header,
+  .weather-app-main {
+    display: flex;
+    width: min(100%, 140rem);
+    padding: 2.5rem;
+  }
+
+  .logo__img {
+    width: 18rem;
+  }
+
+  .units__button {
+    gap: 1.2rem;
+    padding: 1.2rem 1.4rem;
+  }
+
+  .units__icon-unit,
+  .units__icon-dropdown {
+    width: 1.8rem;
+  }
+
+  .units__span {
+    font-size: var(--txt-md);
+  }
+
+  .units__menu {
+    display: flex;
+    gap: 1.2rem;
+    padding: 1rem;
+    font-size: var(--txt-md);
+    border-radius: 1rem;
+    top: calc(100% + 1.2rem);
+  }
+
+  .units__toggle {
+    padding: 1.2rem;
+    font-size: var(--txt-lg);
+  }
+
+  .units__fieldset {
+    gap: 0.8rem;
+  }
+
+  unit[type="radio"] {
+    padding-inline-start: 1.4rem;
+  }
+
+  label:has(input[type="radio"]) {
+    padding-block: 1rem;
+  }
+
+  .units__title {
+    padding-inline-start: 1rem;
+    padding-block: 0.7rem;
+  }
+
+  .form {
+    gap: 1.5rem;
+  }
+
+  .header__title {
+    font-size: clamp(3rem, 4.2vw, 6.2rem);
+    line-height: var(--line-height-md);
+  }
+
+  #city,
+  .button {
+    border-radius: 1.2rem;
+  }
+
+  #city {
+    width: 40%;
+    background-position: 3% 45%;
+  }
+
+  #city::placeholder {
+    font-size: var(--txt-xl);
+  }
+
+  .button {
+    width: fit-content;
+    padding-inline: 2rem;
+    font-size: clamp(1.4rem, 2vw, 2rem);
+  }
+
+  .current-weather {
+    gap: 2rem;
+  }
+
+  .current-weather__display {
+    /* flex-direction: row; */
+    height: 37rem;
+    background-image: url("/assets/images/bg-today-large.svg");
+    background-size: contain;
+    border: 1px solid red;
+  }
+
+  .current-location {
+    font-size: clamp(2.4rem, 4vw, 5rem);
   }
 }
