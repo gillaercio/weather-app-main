@@ -79,9 +79,13 @@ ul {
   padding: 1rem;
   font-size: var(--txt-md);
   color: var(--neutral-0);
-  background-color: var(--neutral-700);
+  background-color: var(--neutral-800);
   border: none;
   border-radius: 0.6rem;
+}
+
+.units__toggle:hover {
+  background-color: var(--neutral-700);
 }
 
 .units__fieldset {
@@ -96,15 +100,14 @@ ul {
 }
 
 input[type="radio"] {
-  padding-inline-start: 1rem;
   appearance: none;
 }
 
-label:has(input[type="radio"]) {
+.units__fieldset label:has(input[type="radio"]) {
   padding-block: 0.8rem;
 }
 
-label:has(input[type="radio"]:checked) {
+.units__fieldset label:has(input[type="radio"]:checked) {
   background-color: var(--neutral-700);
   background-image: url("/assets/images/icon-checkmark.svg");
   background-repeat: no-repeat;
@@ -112,9 +115,13 @@ label:has(input[type="radio"]:checked) {
   border-radius: 0.8rem;
 }
 
+.units__fieldset label:has(input[type="radio"]:focus-visible) {
+  outline: 2px solid var(--neutral-0);
+  outline-offset: 3px;
+}
+
 .units__title {
   width: 100%;
-  padding-inline-start: 0.8rem;
   padding-block: 0.5rem;
   color: var(--neutral-300);
   border-top: 1px solid var(--neutral-600);
@@ -132,8 +139,8 @@ label:has(input[type="radio"]:checked) {
   position: absolute;
   width: 1px;
   height: 1px;
-  padding: 0;
   margin: -1px;
+  padding: 0;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
@@ -142,36 +149,48 @@ label:has(input[type="radio"]:checked) {
 
 .form {
   display: flex;
-  gap: 1rem;
   flex-direction: column;
+  gap: 1rem;
 }
 
 #city,
 .button {
   padding: 1.5rem;
-  border-radius: 0.6rem;
+  border-radius: 0.8rem;
   border: none;
 }
 
 #city {
-  display: flex;
-  align-items: center;
+  padding-inline: 6rem;
   background-image: url("/assets/images/icon-search.svg");
   background-repeat: no-repeat;
   background-position: 3% 50%;
   background-color: var(--neutral-800);
-  padding-inline: 6rem;
 }
 
 #city::placeholder {
   font-size: var(--txt-sm);
-  color: var(--neutral-0);
+  color: var(--neutral-200);
 }
 
 .button {
   font-size: var(--txt-sm);
   color: var(--neutral-0);
   background-color: var(--blue-500);
+}
+
+button:focus-visible {
+  outline: 2px solid var(--neutral-0);
+  outline-offset: 3px;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--blue-500);
+  outline-offset: 3px;
+}
+
+.button:hover {
+  background-color: var(--blue-700);
 }
 
 .weather-app-main {
@@ -188,9 +207,9 @@ label:has(input[type="radio"]:checked) {
 .current-weather__display {
   display: flex;
   flex-direction: column;
+  gap: 1rem;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
   height: 28.8rem;
   background-image: url("/assets/images/bg-today-small.svg");
   background-repeat: no-repeat;
@@ -199,11 +218,19 @@ label:has(input[type="radio"]:checked) {
 }
 
 .current-location {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+}
+
+.current-location__description {
   font-size: var(--txt-3xl);
+  font-weight: var(--fw-bold);
 }
 
 .current-date {
-  font-size: var(--txt-sm);
+  font-size: var(--txt-md);
   font-weight: var(--fw-light);
 }
 
@@ -227,15 +254,15 @@ label:has(input[type="radio"]:checked) {
 .current-results {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
   gap: 1.5rem;
+  justify-content: center;
 }
 
 .current-result {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
   flex: 1 1 calc((100% - 1.5rem) / 2);
+  gap: 1.5rem;
   padding: 2rem;
   font-weight: var(--fw-light);
   background-color: var(--neutral-700);
@@ -258,7 +285,7 @@ label:has(input[type="radio"]:checked) {
 }
 
 .daily-forecast__title {
-  margin-block-end: 1rem;
+  margin-block: 1rem;
 }
 
 .daily-forecast__title,
@@ -270,15 +297,15 @@ label:has(input[type="radio"]:checked) {
 .daily-forecast__list {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
   gap: 1.5rem;
+  justify-content: flex-start;
 }
 
 .daily-forecast__item {
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 0.5rem;
+  align-items: center;
   padding: 1.1rem;
   background-color: var(--neutral-700);
   border-radius: 1rem;
@@ -314,6 +341,7 @@ label:has(input[type="radio"]:checked) {
   padding: 1.4rem 1.2rem;
   background-color: var(--neutral-700);
   border-radius: 1.6rem;
+  border: 1px solid var(--neutral-600);
 }
 
 .hourly-forecast__display {
@@ -381,7 +409,6 @@ label:has(input[type="radio"]:checked) {
 @media screen and (min-width: 700px) {
   .header,
   .weather-app-main {
-    display: flex;
     width: min(100%, 70rem);
     padding: 1.5rem;
   }
@@ -390,16 +417,11 @@ label:has(input[type="radio"]:checked) {
     width: 14rem;
   }
 
-  .units__menu {
-    display: none;
-  }
-
   .header__title {
     font-size: 3rem;
   }
 
   .form {
-    display: flex;
     flex-direction: row;
     justify-content: center;
   }
@@ -413,7 +435,6 @@ label:has(input[type="radio"]:checked) {
   }
 
   .weather-app-main {
-    display: flex;
     flex-direction: row;
     gap: 2rem;
   }
@@ -421,8 +442,8 @@ label:has(input[type="radio"]:checked) {
   .left-side {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
     flex: 1;
+    gap: 2rem;
   }
 
   .daily-forecast__list {
@@ -438,9 +459,7 @@ label:has(input[type="radio"]:checked) {
 @media screen and (min-width: 1440px) {
   .header,
   .weather-app-main {
-    display: flex;
     width: min(100%, 140rem);
-    padding: 2.5rem;
   }
 
   .logo__img {
@@ -462,7 +481,6 @@ label:has(input[type="radio"]:checked) {
   }
 
   .units__menu {
-    display: flex;
     gap: 1.2rem;
     padding: 1rem;
     font-size: var(--txt-md);
@@ -471,7 +489,6 @@ label:has(input[type="radio"]:checked) {
   }
 
   .units__toggle {
-    padding: 1.2rem;
     font-size: var(--txt-lg);
   }
 
@@ -479,21 +496,20 @@ label:has(input[type="radio"]:checked) {
     gap: 0.8rem;
   }
 
-  unit[type="radio"] {
-    padding-inline-start: 1.4rem;
-  }
-
-  label:has(input[type="radio"]) {
+  .units__fieldset label:has(input[type="radio"]) {
     padding-block: 1rem;
   }
 
   .units__title {
-    padding-inline-start: 1rem;
     padding-block: 0.7rem;
   }
 
   .form {
     gap: 1.5rem;
+  }
+
+  .header {
+    padding: 6rem 6rem 1.5rem 6rem;
   }
 
   .header__title {
@@ -521,19 +537,88 @@ label:has(input[type="radio"]:checked) {
     font-size: clamp(1.4rem, 2vw, 2rem);
   }
 
-  .current-weather {
-    gap: 2rem;
+  .weather-app-main {
+    padding: 3rem 6rem 6rem 6rem;
+    gap: 3rem;
   }
 
   .current-weather__display {
-    /* flex-direction: row; */
-    height: 37rem;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 31rem;
+    padding-inline: 3rem;
     background-image: url("/assets/images/bg-today-large.svg");
     background-size: contain;
-    border: 1px solid red;
   }
 
   .current-location {
-    font-size: clamp(2.4rem, 4vw, 5rem);
+    gap: 1.5rem;
+    align-items: flex-start;
+  }
+
+  .current-location__description {
+    font-size: clamp(2.4rem, 4vw, 3rem);
+  }
+
+  .current-date {
+    font-size: var(--txt-lg);
+  }
+
+  .current-temperature {
+    gap: 2rem;
+  }
+
+  .current-temperature__icon {
+    width: 13rem;
+    height: 13rem;
+  }
+
+  .current-temperature__value {
+    font-size: clamp(6.2rem, 6vw, 8.4rem);
+  }
+
+  .current-results {
+    flex-wrap: nowrap;
+    gap: 2.5rem;
+  }
+
+  .current-result__label {
+    font-size: var(--txt-xl);
+  }
+
+  .current-result__value {
+    font-size: clamp(2.4rem, 2vw, 2.6rem);
+  }
+
+  .daily-forecast__list {
+    gap: 2rem;
+  }
+
+  .hourly-forecast {
+    width: 40rem;
+    height: 66.5rem;
+    padding: 2rem 1.8rem;
+    overflow-y: auto;
+  }
+
+  .hourly-forecast__list {
+    gap: 1.3rem;
+  }
+
+  .hourly-forecast__item {
+    padding: 0.8rem 1.2rem;
+  }
+
+  .hourly-forecast__icon {
+    width: 4rem;
+    height: 4rem;
+  }
+
+  .hourly-forecast__time {
+    font-size: var(--txt-md);
+  }
+
+  .hourly-forecast__temperature {
+    font-size: var(--txt-sm);
   }
 }
