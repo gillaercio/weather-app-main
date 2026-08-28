@@ -406,6 +406,10 @@ button:focus-visible {
   color: var(--neutral-200);
 }
 
+.hidden {
+  display: none;
+}
+
 @media screen and (min-width: 700px) {
   .header,
   .weather-app-main {
