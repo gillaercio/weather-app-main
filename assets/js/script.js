@@ -21,6 +21,7 @@ const currentIcon = document.querySelector(".current-temperature__icon");
 const currentResultValues = document.querySelectorAll(".current-result__value");
 
 const dailyForecastItems = document.querySelectorAll(".daily-forecast__item");
+const hourlyList = document.querySelector(".hourly-forecast__list");
 
 const datetime = new Date();
 const formattedDatetime = datetime.toLocaleDateString('en-US', {
@@ -100,8 +101,49 @@ form.addEventListener("submit", (e) => {
 // - temperatura
 // - ícone
 
+function getWeatherIcon(code) {
+  switch (code) {
+    case 0:
+    case 1:
+      return `${ICONS_PATH}icon-sunny.webp`;
+    case 2:
+      return `${ICONS_PATH}icon-partly-cloudy.webp`;
+    case 3:
+      return `${ICONS_PATH}icon-overcast.webp`;
+    case 45:
+      return `${ICONS_PATH}icon-fog.webp`;
+    case 51:
+    case 53:
+    case 55:
+    case 56:
+    case 57:
+      return `${ICONS_PATH}icon-drizzle.webp`;
+    case 61:
+    case 63:
+    case 65:
+    case 66:
+    case 67:
+    case 80:
+    case 81:
+    case 82:
+      return `${ICONS_PATH}icon-rain.webp`;
+    case 71:
+    case 73:
+    case 75:
+    case 85:
+    case 86:
+      return `${ICONS_PATH}icon-snow.webp`;
+    case 95:
+    case 96:
+    case 99:
+      return `${ICONS_PATH}icon-storm.webp`;
+    default:
+      return `${ICONS_PATH}icon-sunny.webp`;
+  }
+}
+
 async function getWeather(latitude, longitude) {
-  const url = `${WEATHER_BASE_URL}?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code,precipitation&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto`;
+  const url = `${WEATHER_BASE_URL}?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code,precipitation&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto&hourly=temperature_2m,weather_code`;
 
   try {
     const response = await fetch(url);
@@ -122,17 +164,36 @@ async function getWeather(latitude, longitude) {
     const temperatureMax = data.daily.temperature_2m_max;
     const dailyDates = data.daily.time;
     const dailyWeatherCodes = data.daily.weather_code;
+    const hourlyTimes = data.hourly.time;
+    const hourlyTemperatures = data.hourly.temperature_2m;
+    const hourlyWeatherCodes = data.hourly.weather_code;
+    const currentHour = new Date().getHours();
+    // const firstHourlyItem = document.querySelector(".hourly-forecast__item");
+    // const firstHourlyItem = document.querySelector(".hourly-forecast__time");
 
-    console.log(url);
+    const currentHourIndex = hourlyTimes.findIndex(time => {
+      return new Date(time).getHours() === currentHour;
+    });
+
+    // console.log(url);
     // console.log(`Temperature: ${temperature}ºC`);
     // console.log(`Humidity: ${humidity}%`);
     // console.log(`Wind: ${wind} km/h`);
     // console.log(`Weather Code: ${weatherCode}`);
     // console.log(`Precipitation: ${precipitation} mm`);
-    console.log(dailyDates);
-    console.log(temperatureMin);
-    console.log(temperatureMax);
-    console.log(dailyWeatherCodes);
+    // console.log(dailyDates);
+    // console.log(temperatureMin);
+    // console.log(temperatureMax);
+    // console.log(dailyWeatherCodes);
+    // console.log(data.hourly);
+    // console.log(hourlyTimes);
+    // console.log(hourlyTemperatures);
+    // console.log(hourlyWeatherCodes);
+    // console.log(currentHour);
+    // console.log(currentHourIndex);
+    // console.log("Horário: "+hourlyTimes[currentHourIndex]);
+    // console.log("Temperatura: "+hourlyTemperatures[currentHourIndex]);
+    // console.log(hour);
 
     currentDate.textContent = formattedDatetime;
     currentTemperature.textContent = `${temperature}°`;
@@ -140,7 +201,41 @@ async function getWeather(latitude, longitude) {
     currentResultValues[1].textContent = `${humidity}%`;
     currentResultValues[2].textContent = `${wind} km/h`;
     currentResultValues[3].textContent = `${precipitation} mm`;
+    // firstHourlyItem.textContent = hourlyTimes[currentHourIndex].slice(11,13);
+    // const hour = hourlyTimes[currentHourIndex].slice(11,13);
+    // const hourNumber = Number(hour);
+    // firstHourlyItem.textContent = hourNumber;
+    // console.log(hourNumber);
+    // firstHourlyItem.textContent = formattedHour;
 
+    currentIcon.src = getWeatherIcon(weatherCode);
+
+    hourlyList.innerHTML = "";
+    for (let i = currentHourIndex; i < 24; i++) {
+      const timeString = hourlyTimes[i];
+      const temp = Math.round(hourlyTemperatures[i]);
+      const code = hourlyWeatherCodes[i];
+
+      const dateObj = new Date(timeString);
+      const formattedHour = dateObj.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        hour12: true
+      });
+
+      const li = document.createElement("li");
+      li.classList.add("hourly-forecast__item");
+
+      li.innerHTML = `
+        <div class="hourly-forecast__sub-item">
+          <img src="${getWeatherIcon(code)}" alt="" class="hourly-forecast__icon">
+          <span class="hourly-forecast__time">${formattedHour}</span>
+        </div>
+        <span class="hourly-forecast__temperature">${temp}°</span>
+      `;
+
+      hourlyList.appendChild(li);
+    }
+    
     for (let i=0; i < dailyForecastItems.length; i++) {
       const item = dailyForecastItems[i];
       const date = new Date(`${dailyDates[i]}T00:00:00`);
@@ -150,140 +245,12 @@ async function getWeather(latitude, longitude) {
 
       const weatherCode = dailyWeatherCodes[i];
       const dailyIcon = item.querySelector(".daily-forecast__icon");
-      
-    console.log(dailyDates[i], formattedDay);
 
-      switch (weatherCode) {
-        case 0:
-        case 1:
-          // sunny 0 1
-          dailyIcon.src = `${ICONS_PATH}icon-sunny.webp`;
-          break;
-          
-        case 2:
-          // partly-cloudy 2
-          dailyIcon.src = `${ICONS_PATH}icon-partly-cloudy.webp`;
-          break;
-          
-        case 3:
-          // overcast 3
-          dailyIcon.src = `${ICONS_PATH}icon-overcast.webp`;
-          break;
-
-        case 45:
-          // fog 45
-          dailyIcon.src = `${ICONS_PATH}icon-fog.webp`;
-          break;
-        
-        case 51:
-        case 53:
-        case 55:
-        case 56:
-        case 57:
-          // drizzle 51 53 55 56 57
-          dailyIcon.src = `${ICONS_PATH}icon-drizzle.webp`;
-          break;
-
-        case 61:
-        case 63:
-        case 65:
-        case 66:
-        case 67:
-        case 80:
-        case 81:
-        case 82:
-          // rain 61 63 65 66 67 80 81 82
-          dailyIcon.src = `${ICONS_PATH}icon-rain.webp`;
-          break;
-
-        case 71:
-        case 73:
-        case 75:
-        case 77:
-        case 85:
-        case 86:
-          // snow 71 73 75 77 85 86
-          dailyIcon.src = `${ICONS_PATH}icon-snow.webp`;
-          break;
-
-        case 95:
-        case 96:
-        case 99:
-          // storm 95 96 99
-          dailyIcon.src = `${ICONS_PATH}icon-storm.webp`;
-          break;
-          
-        default:
-          dailyIcon.src = `${ICONS_PATH}icon-sunny.webp`;
-      }
+      dailyIcon.src = getWeatherIcon(weatherCode);
       
       item.querySelector(".daily-forecast__day").textContent = formattedDay;
       item.querySelector(".daily-forecast__temperature-max").textContent = `${temperatureMax[i]}`;
       item.querySelector(".daily-forecast__temperature-min").textContent = `${temperatureMin[i]}`;
-    }
-
-    switch (weatherCode) {
-      case 0:
-      case 1:
-        // sunny 0 1
-        currentIcon.src = `${ICONS_PATH}icon-sunny.webp`;
-        break;
-        
-      case 2:
-        // partly-cloudy 2
-        currentIcon.src = `${ICONS_PATH}icon-partly-cloudy.webp`;
-        break;
-        
-      case 3:
-        // overcast 3
-        currentIcon.src = `${ICONS_PATH}icon-overcast.webp`;
-        break;
-
-      case 45:
-        // fog 45
-        currentIcon.src = `${ICONS_PATH}icon-fog.webp`;
-        break;
-      
-      case 51:
-      case 53:
-      case 55:
-      case 56:
-      case 57:
-        // drizzle 51 53 55 56 57
-        currentIcon.src = `${ICONS_PATH}icon-drizzle.webp`;
-        break;
-
-      case 61:
-      case 63:
-      case 65:
-      case 66:
-      case 67:
-      case 80:
-      case 81:
-      case 82:
-        // rain 61 63 65 66 67 80 81 82
-        currentIcon.src = `${ICONS_PATH}icon-rain.webp`;
-        break;
-
-      case 71:
-      case 73:
-      case 75:
-      case 77:
-      case 85:
-      case 86:
-        // snow 71 73 75 77 85 86
-        currentIcon.src = `${ICONS_PATH}icon-snow.webp`;
-        break;
-
-      case 95:
-      case 96:
-      case 99:
-        // storm 95 96 99
-        currentIcon.src = `${ICONS_PATH}icon-storm.webp`;
-        break;
-        
-      default:
-        currentIcon.src = `${ICONS_PATH}icon-sunny.webp`;
     }
     
     return {temperature, humidity, wind};
@@ -314,7 +281,8 @@ async function searchCity (city) {
     const latitude = data.results[0].latitude;
     const longitude = data.results[0].longitude;
 
-    console.log(url);
+    // console.log(url);
+    // console.log(data.results);
     // console.log(`City: ${name}`);
     // console.log(`Latitude: ${latitude}`);
     // console.log(`Longitude: ${longitude}`);
