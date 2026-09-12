@@ -49,7 +49,7 @@ unitsButton.addEventListener("click", (e) => {
     unitsMenu.removeAttribute("hidden");
     unitsButton.setAttribute("aria-expanded", "true");
   } else {
-    unitsMenu.setAttribute("hidden");
+    unitsMenu.setAttribute("hidden", "");
     unitsButton.setAttribute("aria-expanded", "false");
   }
 })
@@ -66,6 +66,8 @@ hourlyForecastBtn.addEventListener("click", (e) => {
   e.stopPropagation();
   const isHidden = hourlyDayMenu.hidden;
 
+  if (hourlyDayMenu.children.length === 0) return;
+
   if (isHidden) {
     hourlyDayMenu.removeAttribute("hidden");
     hourlyForecastBtn.setAttribute("aria-expanded", "true");
@@ -77,12 +79,12 @@ hourlyForecastBtn.addEventListener("click", (e) => {
 
 document.addEventListener("click", (e) => {
   if (!unitsButton.contains(e.target) && !unitsMenu.contains(e.target)) {
-    unitsMenu.classList.add("hidden");
+    unitsMenu.setAttribute("hidden", "");
     unitsButton.setAttribute("aria-expanded", "false");
   }
 
   if (!hourlyForecastBtn.contains(e.target) && !hourlyDayMenu.contains(e.target)) {
-    hourlyDayMenu.hidden = true;
+    hourlyDayMenu.setAttribute("hidde", "");
     hourlyForecastBtn.setAttribute("aria-expanded", "false");
   }
 })
