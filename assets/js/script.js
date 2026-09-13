@@ -11,6 +11,16 @@ const winds = document.querySelectorAll('input[name="wind"]');
 const precipitations = document.querySelectorAll('input[name="precipitation"]');
 const unitsToggle = document.querySelector(".units__toggle");
 
+let currentWeatherData = null;
+let currentActiveDayIndex = 0;
+let isImperial = false;
+
+let currentUnits = {
+  temperature: 'celsius',
+  wind: 'km/h',
+  precipitation: 'mm'
+};
+
 const form = document.querySelector(".form");
 const inputForm = document.querySelector("#city");
 
@@ -35,8 +45,6 @@ const formattedDatetime = datetime.toLocaleDateString('en-US', {
   year: 'numeric'
 });
 
-let isImperial = false;
-
 // Etapa JS 2 — Menu de unidades
 // - abrir
 // - fechar
@@ -52,15 +60,45 @@ unitsButton.addEventListener("click", (e) => {
     unitsMenu.setAttribute("hidden", "");
     unitsButton.setAttribute("aria-expanded", "false");
   }
-})
+});
+
+temperatures.forEach(radio => {
+  radio.addEventListener("change", (e) => {
+    currentUnits.temperature = e.target.value;
+    if (currentWeatherData) renderAllUI(currentWeatherData);
+  });
+});
+
+winds.forEach(radio => {
+  radio.addEventListener("change", (e) => {
+    currentUnits.wind = e.target.value;
+    if (currentWeatherData) renderAllUI(currentWeatherData);
+  });
+});
+
+precipitations.forEach(radio => {
+  radio.addEventListener("change", (e) => {
+    currentUnits.precipitation = e.target.value;
+    if (currentWeatherData) renderAllUI(currentWeatherData);
+  });
+});
 
 unitsToggle.addEventListener("click", () => {
   isImperial = !isImperial;
   unitsToggle.textContent = isImperial ? 'Switch to Metric': 'Switch to Imperial';
+
+  currentUnits.temperature = isImperial ? 'fahrenheit' : 'celsius';
+  currentUnits.wind = isImperial ? 'mph' : 'km/h';
+  currentUnits.precipitation = isImperial ? 'in' : 'mm';
+
   saveSelectedTemperature();
   saveSelectedWind();
   saveSelectedPrecipitation();
-})
+
+  if (currentWeatherData) {
+    renderAllUI(currentWeatherData);
+  }
+});
 
 hourlyForecastBtn.addEventListener("click", (e) => {
   e.stopPropagation();
@@ -84,26 +122,26 @@ document.addEventListener("click", (e) => {
   }
 
   if (!hourlyForecastBtn.contains(e.target) && !hourlyDayMenu.contains(e.target)) {
-    hourlyDayMenu.setAttribute("hidde", "");
+    hourlyDayMenu.setAttribute("hidden", "");
     hourlyForecastBtn.setAttribute("aria-expanded", "false");
   }
 })
 
 function saveSelectedTemperature() {
   temperatures.forEach(temperature => {
-    temperature.checked = (temperature.value === "fahrenheit") ? isImperial : !isImperial;
+    temperature.checked = (temperature.value === currentUnits.temperature);
   });
 }
 
 function saveSelectedWind() {
   winds.forEach(wind => {
-    wind.checked = (wind.value === "mph") ? isImperial : !isImperial;
+    wind.checked = (wind.value === currentUnits.wind);
   });
 }
 
 function saveSelectedPrecipitation() {
   precipitations.forEach(precipitation => {
-    precipitation.checked = (precipitation.value === "in") ? isImperial : !isImperial;
+    precipitation.checked = (precipitation.value === currentUnits.precipitation);
   });
 }
 
@@ -169,6 +207,48 @@ function getWeatherIcon(code) {
   }
 }
 
+function formatTemp(celsiusValue) {
+  if (currentUnits.temperature === 'fahrenheit') {
+    const fahrenheit = Math.round((celsiusValue * 9) / 5 + 32);
+    return `${fahrenheit}°`;
+  }
+  return `${Math.round(celsiusValue)}°`;
+}
+
+function formatWind(kmhValue) {
+  if (currentUnits.wind === 'mph') {
+    const mph = Math.round(kmhValue / 1.609);
+    return `${mph} mph`;
+  }
+  return `${Math.round(kmhValue)} km/h`;
+}
+
+function formatPrecipitation(mmValue) {
+  if (currentUnits.precipitation === 'in') {
+    const inches = (mmValue / 25.4).toFixed(2);
+    return `${inches} in`;
+  }
+  return `${mmValue} mm`;
+}
+
+function renderAllUI(data) {
+  if (!data) return;
+
+  currentTemperature.textContent = formatTemp(data.current.temperature_2m);
+  currentResultValues[0].textContent = formatTemp(data.current.temperature_2m);
+  currentResultValues[1].textContent = `${data.current.relative_humidity_2m}%`;
+  currentResultValues[2].textContent = formatWind(data.current.wind_speed_10m);
+  currentResultValues[3].textContent = formatPrecipitation(data.current.precipitation);
+
+  for (let i = 0; i < dailyForecastItems.length; i++) {
+    const item = dailyForecastItems[i];
+    item.querySelector(".daily-forecast__temperature-max").textContent = formatTemp(data.daily.temperature_2m_max[i]);
+    item.querySelector(".daily-forecast__temperature-min").textContent = formatTemp(data.daily.temperature_2m_min[i]);
+  }
+
+  renderHourlyForecast(currentActiveDayIndex, data);
+}
+
 function renderHourlyForecast(dayIndex, data) {
   hourlyList.innerHTML = "";
 
@@ -189,7 +269,7 @@ function renderHourlyForecast(dayIndex, data) {
 
   for (let i = startHourIndex; i < endHourIndex; i++) {
     const timeString = hourlyTimes[i];
-    const temp = Math.round(hourlyTemperatures[i]);
+    const tempFormatted = formatTemp(hourlyTemperatures[i]);
     const code = hourlyWeatherCodes[i];
 
     const dateObj = new Date(timeString);
@@ -206,7 +286,7 @@ function renderHourlyForecast(dayIndex, data) {
         <img src="${getWeatherIcon(code)}" alt="" class="hourly-forecast__icon">
         <span class="hourly-forecast__time">${formattedHour}</span>
       </div>
-      <span class="hourly-forecast__temperature">${temp}°</span>
+      <span class="hourly-forecast__temperature">${tempFormatted}</span>
     `;
 
     hourlyList.appendChild(li);
@@ -224,16 +304,11 @@ async function getWeather(latitude, longitude) {
     }
 
     const data = await response.json();
+    currentWeatherData = data;
+    currentActiveDayIndex = 0;
 
     currentDate.textContent = formattedDatetime;
-    currentTemperature.textContent = `${data.current.temperature_2m}°`;
-    currentResultValues[0].textContent = `${data.current.temperature_2m}°`;
-    currentResultValues[1].textContent = `${data.current.relative_humidity_2m}%`;
-    currentResultValues[2].textContent = `${data.current.wind_speed_10m} km/h`;
-    currentResultValues[3].textContent = `${data.current.precipitation} mm`;
     currentIcon.src = getWeatherIcon(data.current.weather_code);
-
-    renderHourlyForecast(0, data);
 
     hourlyDayMenu.innerHTML = "";
     hourlyDayMenu.setAttribute("hidden", "");
@@ -252,8 +327,6 @@ async function getWeather(latitude, longitude) {
 
       item.querySelector(".daily-forecast__icon").src = getWeatherIcon(data.daily.weather_code[i]);
       item.querySelector(".daily-forecast__day").textContent = formattedDayShort;
-      item.querySelector(".daily-forecast__temperature-max").textContent = `${data.daily.temperature_2m_max[i]}°`;
-      item.querySelector(".daily-forecast__temperature-min").textContent = `${data.daily.temperature_2m_min[i]}°`;
 
       if (i === 0) {
         hourlyForecastDayText.textContent = formattedDayLong;
@@ -266,6 +339,7 @@ async function getWeather(latitude, longitude) {
 
       optionBtn.addEventListener("click", (e) => {
         e.stopPropagation();
+        currentActiveDayIndex = i;
         hourlyForecastDayText.textContent = formattedDayLong;
         renderHourlyForecast(i, data);
         
@@ -275,6 +349,8 @@ async function getWeather(latitude, longitude) {
 
       hourlyDayMenu.appendChild(optionBtn);
     }
+
+    renderAllUI(data);
 
     return {data};
   } catch (error) {
@@ -287,11 +363,11 @@ async function searchCity (city) {
 
   try {
     const response = await fetch(url);
-
+    
     if (!response.ok) {
       throw new Error(`Network error: status ${response.status}`);
     }
-
+    
     const data = await response.json();
 
     if(!data.results || data.results.length === 0) {
