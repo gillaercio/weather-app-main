@@ -157,6 +157,12 @@ input[type="radio"] {
   gap: 1rem;
 }
 
+.form__group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
 #city,
 .button {
   padding: 1.5rem;
@@ -205,6 +211,12 @@ button:focus-visible {
 
 .button:hover {
   background-color: var(--blue-700);
+}
+
+.error-message {
+  align-self: center;
+  font-size: var(--txt-xs);
+  color: var(--orange-500);
 }
 
 .weather-app-main {
@@ -504,16 +516,26 @@ button:focus-visible {
   }
 
   .form {
-    flex-direction: row;
+    /* flex-direction: row; */
     justify-content: center;
+    align-items: center;
+  }
+
+  .form__group {
+    flex-direction: row;
   }
 
   #city {
-    width: 60%;
+    /* width: 60%; */
+    width: 100%;
   }
 
   .button {
     width: 8rem;
+  }
+
+  .error-message {
+    font-size: var(--txt-sm);
   }
 
   .weather-app-main {
@@ -594,9 +616,9 @@ button:focus-visible {
     padding-block: 0.7rem;
   }
 
-  .form {
+  /* .form {
     gap: 1.5rem;
-  }
+  } */
 
   .header {
     padding: 6rem 6rem 1.5rem 6rem;
@@ -613,7 +635,8 @@ button:focus-visible {
   }
 
   #city {
-    width: 40%;
+    /* width: 40%; */
+    width: 50rem;
     background-position: 3% 45%;
   }
 
@@ -625,6 +648,10 @@ button:focus-visible {
     width: fit-content;
     padding-inline: 2rem;
     font-size: clamp(1.4rem, 2vw, 2rem);
+  }
+
+  .error-message {
+    font-size: var(--txt-md);
   }
 
   .weather-app-main {

@@ -65,9 +65,12 @@
     <h1 class="header__title">How's the sky looking today?</h1>
 
     <form action="" class="form">
-      <label for="city" class="visually-hidden">Search for a city</label>
-      <input type="text" id="city" name="city" placeholder="Search for a place...">
-      <button type="submit" class="button">Search</button>
+      <div class="form__group">
+        <label for="city" class="visually-hidden">Search for a city</label>
+        <input type="text" id="city" class="form__input" name="city" placeholder="Search for a place..." aria-describedby="city-error">
+        <button type="submit" class="button">Search</button>
+      </div>
+      <p id="city-error" class="error-message" aria-live="polite"></p>
     </form>
   </header>
 
@@ -76,14 +79,14 @@
       <section class="current-weather">
         <div class="current-weather__display">
           <div class="current-location">
-            <span class="current-location__description">São José do Egito, Brazil</span>
+            <span class="current-location__description">São Jose do Egito, Brazil</span>
             <time datetime="2026-08-16" class="current-date">
               Sunday, August 16, 2026
             </time>
           </div>
           <div class="current-temperature">
             <img src="assets/images/icon-sunny.webp" alt="" class="current-temperature__icon">
-            <span class="current-temperature__value">68°</span>
+            <span class="current-temperature__value">28°</span>
           </div>
         </div>
         <div class="current-results">
@@ -93,11 +96,11 @@
           </div>
           <div class="current-result">
             <span class="current-result__label">Humidity</span>
-            <span class="current-result__value">46%</span>
+            <span class="current-result__value">16%</span>
           </div>
           <div class="current-result">
             <span class="current-result__label">Wind</span>
-            <span class="current-result__value">14km/h</span>
+            <span class="current-result__value">6km/h</span>
           </div>
       
           <div class="current-result">

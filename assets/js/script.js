@@ -1,6 +1,27 @@
 // Etapa JS 1 — DOM
 // - selecionar elementos -> testar console.log
+
+// Etapa JS 2 — Menu de unidades
+// - abrir
+// - fechar
+// - selecionar
+
+// Etapa JS 3 — formulário
+// - submit -> capturar cidade -> validar entrada
+
+// Etapa JS 4 — API
+// - fetch -> async/await -> response -> JSON
+
+// Etapa JS 5 — clima atual
+// - cidade
+// - data
+// - temperatura
+// - ícone
+
+// Etapa JS 6 — cards
+// - current results -> daily forecast -> hourly forecast
 const GEOCODING_BASE_URL = "https://geocoding-api.open-meteo.com/v1/search";
+// const GEOCODING_BASE_URL = "https://geocoding-api.open-meteo.com/v1/search_INVALIDA";
 const WEATHER_BASE_URL = "https://api.open-meteo.com/v1/forecast";
 const ICONS_PATH = "assets/images/";
 
@@ -11,18 +32,9 @@ const winds = document.querySelectorAll('input[name="wind"]');
 const precipitations = document.querySelectorAll('input[name="precipitation"]');
 const unitsToggle = document.querySelector(".units__toggle");
 
-let currentWeatherData = null;
-let currentActiveDayIndex = 0;
-let isImperial = false;
-
-let currentUnits = {
-  temperature: 'celsius',
-  wind: 'km/h',
-  precipitation: 'mm'
-};
-
 const form = document.querySelector(".form");
 const inputForm = document.querySelector("#city");
+const errorMessage = document.querySelector(".error-message");
 
 const currentLocation = document.querySelector(".current-location__description");
 const currentTemperature = document.querySelector(".current-temperature__value");
@@ -37,6 +49,16 @@ const hourlyForecastDayText = document.querySelector(".hourly-forecast__day");
 const hourlyDayMenu = document.querySelector("#hourly-day-menu");
 const hourlyList = document.querySelector(".hourly-forecast__list");
 
+let currentWeatherData = null;
+let currentActiveDayIndex = 0;
+let isImperial = false;
+
+let currentUnits = {
+  temperature: 'celsius',
+  wind: 'km/h',
+  precipitation: 'mm'
+};
+
 const datetime = new Date();
 const formattedDatetime = datetime.toLocaleDateString('en-US', {
   weekday: 'long',
@@ -45,10 +67,23 @@ const formattedDatetime = datetime.toLocaleDateString('en-US', {
   year: 'numeric'
 });
 
-// Etapa JS 2 — Menu de unidades
-// - abrir
-// - fechar
-// - selecionar
+function setUIState(state, message = "") {
+  form.removeAttribute("aria-busy");
+  if (errorMessage) errorMessage.textContent = "";
+
+  switch (state) {
+    case "loading":
+      form.setAttribute("aria-busy", "true");
+      break;
+    case "success":
+      break;
+    case "error":
+    case "empty":
+      if (errorMessage) errorMessage.textContent = message;
+      break;
+  }
+}
+
 unitsButton.addEventListener("click", (e) => {
   e.stopPropagation();
   const isHidden = unitsMenu.hasAttribute("hidden");
@@ -127,6 +162,16 @@ document.addEventListener("click", (e) => {
   }
 })
 
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    unitsMenu.setAttribute("hidden", "");
+    unitsButton.setAttribute("aria-expanded", "false");
+
+    hourlyDayMenu.setAttribute("hidden", "");
+    hourlyForecastBtn.setAttribute("aria-expanded", "false");
+  }
+})
+
 function saveSelectedTemperature() {
   temperatures.forEach(temperature => {
     temperature.checked = (temperature.value === currentUnits.temperature);
@@ -145,26 +190,16 @@ function saveSelectedPrecipitation() {
   });
 }
 
-// Etapa JS 3 — formulário
-// - submit -> capturar cidade -> validar entrada
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   const inputValue = inputForm.value.trim();
-  if (!inputValue) return;
+  if (!inputValue) {
+    setUIState("empty", "Please, type the name of city before searching.");
+    return;
+  }
+
   searchCity(inputValue);
 })
-
-// Etapa JS 4 — API
-// - fetch -> async/await -> response -> JSON
-
-// Etapa JS 5 — clima atual
-// - cidade
-// - data
-// - temperatura
-// - ícone
-
-// Etapa JS 6 — cards
-// - current results -> daily forecast -> hourly forecast
 
 function getWeatherIcon(code) {
   switch (code) {
@@ -267,6 +302,8 @@ function renderHourlyForecast(dayIndex, data) {
     }
   }
 
+  const fragment = document.createDocumentFragment();
+
   for (let i = startHourIndex; i < endHourIndex; i++) {
     const timeString = hourlyTimes[i];
     const tempFormatted = formatTemp(hourlyTemperatures[i]);
@@ -288,9 +325,9 @@ function renderHourlyForecast(dayIndex, data) {
       </div>
       <span class="hourly-forecast__temperature">${tempFormatted}</span>
     `;
-
-    hourlyList.appendChild(li);
+    fragment.appendChild(li);
   }
+  hourlyList.appendChild(fragment);
 }
 
 async function getWeather(latitude, longitude) {
@@ -316,7 +353,9 @@ async function getWeather(latitude, longitude) {
 
     for (let i = 0; i < dailyForecastItems.length; i++) {
       const item = dailyForecastItems[i];
-      const date = new Date(`${data.daily.time[i]}T00:00:00`);
+      // const date = new Date(`${data.daily.time[i]}T00:00:00`);
+      const [year, month, day] = data.daily.time[i].split("-");
+      const date = new Date(year, month - 1, day);
 
       const formattedDayShort = date.toLocaleDateString('en-US', {
         weekday: 'short'
@@ -355,10 +394,12 @@ async function getWeather(latitude, longitude) {
     return {data};
   } catch (error) {
     console.error("An error occurred while fetching the data:", error.message);
+    throw error;
   }
 }
 
-async function searchCity (city) {
+async function searchCity(city) {
+  setUIState("loading");
   const url = `${GEOCODING_BASE_URL}?name=${encodeURIComponent(city)}&count=1&language=pt&format=json`;
 
   try {
@@ -371,7 +412,8 @@ async function searchCity (city) {
     const data = await response.json();
 
     if(!data.results || data.results.length === 0) {
-      console.warn("City not found.");
+      // console.warn("City not found.");
+      setUIState("empty", "City not found. Try searching with a different name.");
       return;
     }
 
@@ -383,8 +425,10 @@ async function searchCity (city) {
     currentLocation.textContent = `${name}, ${country}`;
 
     await getWeather(latitude, longitude);
+    setUIState("success");
   } catch (error) {
     console.error("An error occurred while fetching the data:", error.message);
+    setUIState("error", "Error loading weather data. Please try again later.");
   }
 }
 
