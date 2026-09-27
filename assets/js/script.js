@@ -68,19 +68,75 @@ const formattedDatetime = datetime.toLocaleDateString('en-US', {
 });
 
 function setUIState(state, message = "") {
+  const dashboard = document.querySelector(".weather-dashboard") || document.body;
+
   form.removeAttribute("aria-busy");
   if (errorMessage) errorMessage.textContent = "";
+
+  const submitButton = form.querySelector('button[type="submit"]');
 
   switch (state) {
     case "loading":
       form.setAttribute("aria-busy", "true");
+
+      if (inputForm) inputForm.disabled = true;
+      if (submitButton) submitButton.disabled = true;
+      dashboard.classList.add("is-loading");
+
+      currentResultValues.forEach(el => el.textContent = "-");
+      clearUIForLoading();
       break;
     case "success":
+      if (inputForm) inputForm.disabled = false;
+      if (submitButton) submitButton.disabled = false;
+      dashboard.classList.remove("is-loading");
       break;
     case "error":
     case "empty":
+      if (inputForm) inputForm.disabled = false;
+      if (submitButton) submitButton.disabled = false;
+      dashboard.classList.add("is-loading");
       if (errorMessage) errorMessage.textContent = message;
       break;
+  }
+}
+
+function clearUIForLoading() {
+  if (currentLocation) currentLocation.textContent = "";
+  if (currentTemperature) currentTemperature.textContent = "";
+  if (currentDate) currentDate.textContent = "";
+
+  if (currentIcon) {
+    currentIcon.src = `${ICONS_PATH}icon-loading.svg`;
+    currentIcon.alt = "Loading...";
+  }
+
+  dailyForecastItems.forEach(item => {
+    const dayName = item.querySelector(".daily-forecast__day");
+    const tempMax = item.querySelector(".daily-forecast__temperature-max");
+    const tempMin = item.querySelector(".daily-forecast__temperature-min");
+    const icon = item.querySelector(".daily-forecast__icon");
+
+    if (dayName) dayName.textContent = "";
+    if (tempMax) tempMax.textContent = "";
+    if (tempMin) tempMin.textContent = "";
+    if (icon) {
+      icon.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxIiBoZWlnaHQ9IjEiLz4";
+      icon.alt = "";
+    }
+  });
+
+  if (hourlyForecastDayText) {
+    hourlyForecastDayText.textContent = "-";
+  }
+
+  if (hourlyList) {
+    hourlyList.innerHTML = "";
+    for (let i = 0; i < 8; i++) {
+      const li = document.createElement("li");
+      li.classList.add("hourly-forecast__item");
+      hourlyList.appendChild(li);
+    }
   }
 }
 
@@ -353,7 +409,6 @@ async function getWeather(latitude, longitude) {
 
     for (let i = 0; i < dailyForecastItems.length; i++) {
       const item = dailyForecastItems[i];
-      // const date = new Date(`${data.daily.time[i]}T00:00:00`);
       const [year, month, day] = data.daily.time[i].split("-");
       const date = new Date(year, month - 1, day);
 
@@ -412,7 +467,6 @@ async function searchCity(city) {
     const data = await response.json();
 
     if(!data.results || data.results.length === 0) {
-      // console.warn("City not found.");
       setUIState("empty", "City not found. Try searching with a different name.");
       return;
     }
