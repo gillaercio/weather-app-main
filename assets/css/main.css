@@ -290,6 +290,61 @@ button:focus-visible {
   list-style: none;
 }
 
+.error-state {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  max-width: 45rem;
+  min-height: 50vh;
+  margin-inline: auto;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.error-state__icon {
+  width: 4rem;
+  height: 4rem;
+  margin-bottom: 0.5rem;
+}
+
+.error-state__title {
+  font-family: var(--bricolage-grotesque);
+  font-size: clamp(2.8rem, 4vw, 3.6rem);
+  font-weight: var(--fw-bold);
+  color: var(--neutral-0);
+}
+
+.error-state__description {
+  font-size: var(--txt-md);
+  color: var(--neutral-200);
+  line-height: var(--line-height-md);
+}
+
+.button--retry {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 1rem;
+  padding: 1rem 2rem;
+  font-size: var(--txt-sm);
+  color: var(--neutral-0);
+  background-color: var(--neutral-700);
+  border: 1px solid var(--neutral-600);
+  border-radius: 0.8rem;
+  transition: background-color 0.2s ease;
+}
+
+.button--retry:hover {
+  background-color: var(--neutral-600);
+}
+
+.button__icon {
+  width: 1.6rem;
+  height: 1.6rem;
+}
+
 .weather-app-main {
   flex-direction: column;
   gap: 2.5rem;

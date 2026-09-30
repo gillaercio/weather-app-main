@@ -73,6 +73,17 @@
       <p id="city-error" class="error-message" aria-live="polite"></p>
     </form>
   </header>
+  <section id="api-error-state" class="error-state hidden" aria-live="assertive">
+    <img src="assets/images/icon-error.svg" alt="" class="error-state__icon">
+    <h2 class="error-state__title">Something went wrong</h2>
+    <p class="error-state__description">
+      We couldn't connect to the server (API error). Please try again in a few moments.
+    </p>
+    <button type="button" id="retry-button" class="button button--retry">
+      <img src="assets/images/icon-retry.svg" alt="" class="button__icon">
+      Retry
+    </button>
+  </section>
 
   <main class="weather-app-main">
     <div class="left-side">

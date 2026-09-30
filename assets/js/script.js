@@ -25,6 +25,7 @@ const GEOCODING_BASE_URL = "https://geocoding-api.open-meteo.com/v1/search";
 const WEATHER_BASE_URL = "https://api.open-meteo.com/v1/forecast";
 const ICONS_PATH = "assets/images/";
 
+const headerTitle = document.querySelector(".header__title");
 const unitsButton = document.querySelector(".units__button");
 const unitsMenu = document.querySelector(".units__menu");
 const temperatures = document.querySelectorAll('input[name="temperature"]');
@@ -35,6 +36,7 @@ const unitsToggle = document.querySelector(".units__toggle");
 const form = document.querySelector(".form");
 const inputForm = document.querySelector("#city");
 const errorMessage = document.querySelector(".error-message");
+const weatherAppMain = document.querySelector(".weather-app-main");
 
 const currentLocation = document.querySelector(".current-location__description");
 const currentTemperature = document.querySelector(".current-temperature__value");
@@ -49,9 +51,13 @@ const hourlyForecastDayText = document.querySelector(".hourly-forecast__day");
 const hourlyDayMenu = document.querySelector("#hourly-day-menu");
 const hourlyList = document.querySelector(".hourly-forecast__list");
 
+const apiErrorSection = document.querySelector("#api-error-state");
+const retryButton = document.querySelector("#retry-button");
+
 let currentWeatherData = null;
 let currentActiveDayIndex = 0;
 let isImperial = false;
+let lastSearchedCity = "";
 
 let currentUnits = {
   temperature: 'celsius',
@@ -83,22 +89,64 @@ function setUIState(state, message = "") {
       if (submitButton) submitButton.disabled = true;
       dashboard.classList.add("is-loading");
 
+      if (headerTitle) headerTitle.classList.remove("hidden");
+      if (form) form.classList.remove("hidden");
+
       currentResultValues.forEach(el => el.textContent = "-");
+
+      if (apiErrorSection) apiErrorSection.classList.add("hidden");
+      if (weatherAppMain) weatherAppMain.classList.remove("hidden");
       clearUIForLoading();
       break;
     case "success":
       if (inputForm) inputForm.disabled = false;
       if (submitButton) submitButton.disabled = false;
       dashboard.classList.remove("is-loading");
+
+      if (headerTitle) headerTitle.classList.remove("hidden");
+      if (form) form.classList.remove("hidden");
+
+      if (apiErrorSection) apiErrorSection.classList.add("hidden");
+      if (weatherAppMain) weatherAppMain.classList.remove("hidden");
       break;
-    case "error":
+    case "api-error":
+      if (inputForm) inputForm.disabled = false;
+      dashboard.classList.remove("is-loading");
+
+      if (headerTitle) headerTitle.classList.add("hidden");
+      if (form) form.classList.add("hidden");
+
+      if (apiErrorSection) apiErrorSection.classList.remove("hidden");
+      if (weatherAppMain) weatherAppMain.classList.add("hidden");
+      break;
     case "empty":
       if (inputForm) inputForm.disabled = false;
       if (submitButton) submitButton.disabled = false;
-      dashboard.classList.add("is-loading");
+
+      dashboard.classList.remove("is-loading");
       if (errorMessage) errorMessage.textContent = message;
+
+      if (headerTitle) headerTitle.classList.remove("hidden");
+      if (form) form.classList.remove("hidden");
       break;
   }
+}
+
+function showNoResultsError() {
+  if (weatherAppMain) weatherAppMain.classList.add("hidden");
+
+  if (errorMessage) {
+    errorMessage.textContent = "No search result found!";
+    errorMessage.removeAttribute("hidden");
+  }
+}
+
+function clearErrorState() {
+  if (errorMessage) {
+    errorMessage.textContent = "";
+    errorMessage.setAttribute("hidden", "true");
+  }
+  if (weatherAppMain) weatherAppMain.classList.remove("hidden");
 }
 
 function clearUIForLoading() {
@@ -454,7 +502,9 @@ async function getWeather(latitude, longitude) {
 }
 
 async function searchCity(city) {
+  lastSearchedCity = city;
   setUIState("loading");
+
   const url = `${GEOCODING_BASE_URL}?name=${encodeURIComponent(city)}&count=1&language=pt&format=json`;
 
   try {
@@ -471,19 +521,26 @@ async function searchCity(city) {
       return;
     }
 
-    const name = data.results[0].name;
-    const country = data.results[0].country;
-    const latitude = data.results[0].latitude;
-    const longitude = data.results[0].longitude;
-
+    const { name, country, latitude, longitude } = data.results[0];
     currentLocation.textContent = `${name}, ${country}`;
 
     await getWeather(latitude, longitude);
     setUIState("success");
   } catch (error) {
     console.error("An error occurred while fetching the data:", error.message);
-    setUIState("error", "Error loading weather data. Please try again later.");
+    // setUIState("error", "Error loading weather data. Please try again later.");
+    setUIState("api-error");
   }
+}
+
+if (retryButton) {
+  retryButton.addEventListener("click", () => {
+    if (lastSearchedCity) {
+      searchCity(lastSearchedCity);
+    } else {
+      setUIState("success");
+    }
+  });
 }
 
 // Etapa JS 7 — estados
