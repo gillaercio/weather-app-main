@@ -111,13 +111,35 @@ function setUIState(state, message = "") {
       break;
     case "api-error":
       if (inputForm) inputForm.disabled = false;
+      if (submitButton) submitButton.disabled = false;
       dashboard.classList.remove("is-loading");
 
       if (headerTitle) headerTitle.classList.add("hidden");
       if (form) form.classList.add("hidden");
-
-      if (apiErrorSection) apiErrorSection.classList.remove("hidden");
       if (weatherAppMain) weatherAppMain.classList.add("hidden");
+
+      if (apiErrorSection) {
+        apiErrorSection.classList.remove("error-state--no-results");
+        if (retryButton) retryButton.classList.remove("hidden");
+        apiErrorSection.classList.remove("hidden");
+      }
+      break;
+    case "no-results":
+      if (inputForm) inputForm.disabled = false;
+      if (submitButton) submitButton.disabled = false;
+      dashboard.classList.remove("is-loading");
+
+      if (headerTitle) headerTitle.classList.remove("hidden");
+      if (form) form.classList.remove("hidden");
+      if (weatherAppMain) weatherAppMain.classList.add("hidden");
+
+      if (apiErrorSection) {
+        apiErrorSection.classList.add("error-state--no-results");
+        apiErrorSection.querySelector(".error-state__title").textContent = "No search result found.";
+        apiErrorSection.querySelector(".error-state__description").textContent = "";
+        if (retryButton) retryButton.classList.add("hidden");
+        apiErrorSection.classList.remove("hidden");
+      }
       break;
     case "empty":
       if (inputForm) inputForm.disabled = false;
@@ -517,7 +539,8 @@ async function searchCity(city) {
     const data = await response.json();
 
     if(!data.results || data.results.length === 0) {
-      setUIState("empty", "City not found. Try searching with a different name.");
+      // setUIState("empty", "City not found. Try searching with a different name.");
+      setUIState("no-results");
       return;
     }
 

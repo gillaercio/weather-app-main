@@ -322,6 +322,10 @@ button:focus-visible {
   line-height: var(--line-height-md);
 }
 
+.error-state--no-results .error-state__icon {
+  display: none;
+}
+
 .button--retry {
   display: flex;
   align-items: center;
