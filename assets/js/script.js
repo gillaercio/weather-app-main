@@ -35,6 +35,7 @@ const unitsToggle = document.querySelector(".units__toggle");
 
 const form = document.querySelector(".form");
 const inputForm = document.querySelector("#city");
+const searchProgress = document.querySelector("#search-progress");
 const errorMessage = document.querySelector(".error-message");
 const weatherAppMain = document.querySelector(".weather-app-main");
 
@@ -89,6 +90,8 @@ function setUIState(state, message = "") {
       if (submitButton) submitButton.disabled = true;
       dashboard.classList.add("is-loading");
 
+      if (searchProgress) searchProgress.classList.remove("hidden");
+
       if (headerTitle) headerTitle.classList.remove("hidden");
       if (form) form.classList.remove("hidden");
 
@@ -103,6 +106,8 @@ function setUIState(state, message = "") {
       if (submitButton) submitButton.disabled = false;
       dashboard.classList.remove("is-loading");
 
+      if (searchProgress) searchProgress.classList.add("hidden");
+
       if (headerTitle) headerTitle.classList.remove("hidden");
       if (form) form.classList.remove("hidden");
 
@@ -113,6 +118,8 @@ function setUIState(state, message = "") {
       if (inputForm) inputForm.disabled = false;
       if (submitButton) submitButton.disabled = false;
       dashboard.classList.remove("is-loading");
+
+      if (searchProgress) searchProgress.classList.add("hidden");
 
       if (headerTitle) headerTitle.classList.add("hidden");
       if (form) form.classList.add("hidden");
@@ -129,6 +136,8 @@ function setUIState(state, message = "") {
       if (submitButton) submitButton.disabled = false;
       dashboard.classList.remove("is-loading");
 
+      if (searchProgress) searchProgress.classList.add("hidden");
+
       if (headerTitle) headerTitle.classList.remove("hidden");
       if (form) form.classList.remove("hidden");
       if (weatherAppMain) weatherAppMain.classList.add("hidden");
@@ -144,8 +153,10 @@ function setUIState(state, message = "") {
     case "empty":
       if (inputForm) inputForm.disabled = false;
       if (submitButton) submitButton.disabled = false;
-
       dashboard.classList.remove("is-loading");
+
+      if (searchProgress) searchProgress.classList.add("hidden");
+
       if (errorMessage) errorMessage.textContent = message;
 
       if (headerTitle) headerTitle.classList.remove("hidden");
@@ -539,7 +550,6 @@ async function searchCity(city) {
     const data = await response.json();
 
     if(!data.results || data.results.length === 0) {
-      // setUIState("empty", "City not found. Try searching with a different name.");
       setUIState("no-results");
       return;
     }
@@ -551,7 +561,6 @@ async function searchCity(city) {
     setUIState("success");
   } catch (error) {
     console.error("An error occurred while fetching the data:", error.message);
-    // setUIState("error", "Error loading weather data. Please try again later.");
     setUIState("api-error");
   }
 }

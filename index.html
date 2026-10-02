@@ -70,6 +70,12 @@
         <input type="text" id="city" class="form__input" name="city" placeholder="Search for a place..." aria-describedby="city-error">
         <button type="submit" class="button">Search</button>
       </div>
+
+      <div id="search-progress" class="search-progress hidden" aria-live="polite">
+        <img src="assets/images/icon-loading.svg" alt="" class="search-progress__icon">
+        <span class="search-progress__text">Search in progress</span>
+      </div>
+
       <p id="city-error" class="error-message" aria-live="polite"></p>
     </form>
   </header>
@@ -97,7 +103,7 @@
           </div>
           <div class="current-temperature">
             <img src="assets/images/icon-sunny.webp" alt="" class="current-temperature__icon">
-            <span class="current-temperature__value">20°</span>
+            <span class="current-temperature__value">68°</span>
           </div>
         </div>
         <div class="current-results">
