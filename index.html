@@ -69,6 +69,8 @@
         <label for="city" class="visually-hidden">Search for a city</label>
         <input type="text" id="city" class="form__input" name="city" placeholder="Search for a place..." aria-describedby="city-error">
         <button type="submit" class="button">Search</button>
+
+        <ul id="city-dropdown" class="city-dropdown hidden" role="listbox" aria-label="City suggestions"></ul>
       </div>
 
       <div id="search-progress" class="search-progress hidden" aria-live="polite">
@@ -96,7 +98,7 @@
       <section class="current-weather">
         <div class="current-weather__display">
           <div class="current-location">
-            <span class="current-location__description">Berlim, Germany</span>
+            <span class="current-location__description">Berlin, Germany</span>
             <time datetime="2026-08-16" class="current-date">
               Tuesday, Aug 5, 2025
             </time>
@@ -109,7 +111,7 @@
         <div class="current-results">
           <div class="current-result">
             <span class="current-result__label">Feels like</span>
-            <span class="current-result__value">18°</span>
+            <span class="current-result__value">64°</span>
           </div>
           <div class="current-result">
             <span class="current-result__label">Humidity</span>
@@ -117,12 +119,12 @@
           </div>
           <div class="current-result">
             <span class="current-result__label">Wind</span>
-            <span class="current-result__value">14km/h</span>
+            <span class="current-result__value">9 mph</span>
           </div>
       
           <div class="current-result">
             <span class="current-result__label">Precipitation</span>
-            <span class="current-result__value">0 mm</span>
+            <span class="current-result__value">0 in</span>
           </div>
         </div>
       </section>
@@ -133,56 +135,56 @@
             <span class="daily-forecast__day">Tue</span>
             <img src="assets/images/icon-partly-cloudy.webp" alt="" class="daily-forecast__icon">
             <div class="daily-forecast__temperature">
-              <span class="daily-forecast__temperature-max">20°</span>
-              <span class="daily-forecast__temperature-min">14°</span>
+              <span class="daily-forecast__temperature-max">68°</span>
+              <span class="daily-forecast__temperature-min">57°</span>
             </div>
           </li>
           <li class="daily-forecast__item">
             <span class="daily-forecast__day">Wed</span>
             <img src="assets/images/icon-storm.webp" alt="" class="daily-forecast__icon">
             <div class="daily-forecast__temperature">
-              <span class="daily-forecast__temperature-max">21°</span>
-              <span class="daily-forecast__temperature-min">15°</span>
+              <span class="daily-forecast__temperature-max">70°</span>
+              <span class="daily-forecast__temperature-min">59°</span>
             </div>
           </li>
           <li class="daily-forecast__item">
             <span class="daily-forecast__day">Thu</span>
             <img src="assets/images/icon-sunny.webp" alt="" class="daily-forecast__icon">
             <div class="daily-forecast__temperature">
-              <span class="daily-forecast__temperature-max">24°</span>
-              <span class="daily-forecast__temperature-min">14°</span>
+              <span class="daily-forecast__temperature-max">75°</span>
+              <span class="daily-forecast__temperature-min">57°</span>
             </div>
           </li>
           <li class="daily-forecast__item">
             <span class="daily-forecast__day">Fri</span>
             <img src="assets/images/icon-rain.webp" alt="" class="daily-forecast__icon">
             <div class="daily-forecast__temperature">
-              <span class="daily-forecast__temperature-max">25°</span>
-              <span class="daily-forecast__temperature-min">13°</span>
+              <span class="daily-forecast__temperature-max">77°</span>
+              <span class="daily-forecast__temperature-min">55°</span>
             </div>
           </li>
           <li class="daily-forecast__item">
             <span class="daily-forecast__day">Sat</span>
             <img src="assets/images/icon-snow.webp" alt="" class="daily-forecast__icon">
             <div class="daily-forecast__temperature">
-              <span class="daily-forecast__temperature-max">21°</span>
-              <span class="daily-forecast__temperature-min">15°</span>
+              <span class="daily-forecast__temperature-max">70°</span>
+              <span class="daily-forecast__temperature-min">59°</span>
             </div>
           </li>
           <li class="daily-forecast__item">
             <span class="daily-forecast__day">Sun</span>
             <img src="assets/images/icon-fog.webp" alt="" class="daily-forecast__icon">
             <div class="daily-forecast__temperature">
-              <span class="daily-forecast__temperature-max">25°</span>
-              <span class="daily-forecast__temperature-min">16°</span>
+              <span class="daily-forecast__temperature-max">77°</span>
+              <span class="daily-forecast__temperature-min">61°</span>
             </div>
           </li>
           <li class="daily-forecast__item">
             <span class="daily-forecast__day">Mon</span>
             <img src="assets/images/icon-drizzle.webp" alt="" class="daily-forecast__icon">
             <div class="daily-forecast__temperature">
-              <span class="daily-forecast__temperature-max">24°</span>
-              <span class="daily-forecast__temperature-min">15°</span>
+              <span class="daily-forecast__temperature-max">75°</span>
+              <span class="daily-forecast__temperature-min">59°</span>
             </div>
           </li>
         </ul>
@@ -208,77 +210,77 @@
             <img src="assets/images/icon-overcast.webp" alt="" class="hourly-forecast__icon">
             <span class="hourly-forecast__time">3 PM</span>
           </div>
-          <span class="hourly-forecast__temperature">20°</span>
+          <span class="hourly-forecast__temperature">68°</span>
         </li>
         <li class="hourly-forecast__item">
           <div class="hourly-forecast__sub-item">
             <img src="assets/images/icon-overcast.webp" alt="" class="hourly-forecast__icon">
             <span class="hourly-forecast__time">4 PM</span>
           </div>
-          <span class="hourly-forecast__temperature">20°</span>
+          <span class="hourly-forecast__temperature">68°</span>
         </li>
         <li class="hourly-forecast__item">
           <div class="hourly-forecast__sub-item">
             <img src="assets/images/icon-overcast.webp" alt="" class="hourly-forecast__icon">
             <span class="hourly-forecast__time">5 PM</span>
           </div>
-          <span class="hourly-forecast__temperature">20°</span>
+          <span class="hourly-forecast__temperature">68°</span>
         </li>
         <li class="hourly-forecast__item">
           <div class="hourly-forecast__sub-item">
             <img src="assets/images/icon-overcast.webp" alt="" class="hourly-forecast__icon">
             <span class="hourly-forecast__time">6 PM</span>
           </div>
-          <span class="hourly-forecast__temperature">19°</span>
+          <span class="hourly-forecast__temperature">66°</span>
         </li>
         <li class="hourly-forecast__item">
           <div class="hourly-forecast__sub-item">
             <img src="assets/images/icon-overcast.webp" alt="" class="hourly-forecast__icon">
             <span class="hourly-forecast__time">7 PM</span>
           </div>
-          <span class="hourly-forecast__temperature">18°</span>
+          <span class="hourly-forecast__temperature">66°</span>
         </li>
         <li class="hourly-forecast__item">
           <div class="hourly-forecast__sub-item">
             <img src="assets/images/icon-overcast.webp" alt="" class="hourly-forecast__icon">
             <span class="hourly-forecast__time">8 PM</span>
           </div>
-          <span class="hourly-forecast__temperature">18°</span>
+          <span class="hourly-forecast__temperature">64°</span>
         </li>
         <li class="hourly-forecast__item">
           <div class="hourly-forecast__sub-item">
             <img src="assets/images/icon-overcast.webp" alt="" class="hourly-forecast__icon">
             <span class="hourly-forecast__time">9 PM</span>
           </div>
-          <span class="hourly-forecast__temperature">17°</span>
+          <span class="hourly-forecast__temperature">63°</span>
         </li>
         <li class="hourly-forecast__item">
           <div class="hourly-forecast__sub-item">
             <img src="assets/images/icon-overcast.webp" alt="" class="hourly-forecast__icon">
             <span class="hourly-forecast__time">10 PM</span>
           </div>
-          <span class="hourly-forecast__temperature">17°</span>
+          <span class="hourly-forecast__temperature">63°</span>
         </li>
         <li class="hourly-forecast__item">
           <div class="hourly-forecast__sub-item">
             <img src="assets/images/icon-overcast.webp" alt="" class="hourly-forecast__icon">
             <span class="hourly-forecast__time">11 PM</span>
           </div>
-          <span class="hourly-forecast__temperature">16°</span>
+          <span class="hourly-forecast__temperature">63°</span>
         </li>
         <li class="hourly-forecast__item">
           <div class="hourly-forecast__sub-item">
             <img src="assets/images/icon-overcast.webp" alt="" class="hourly-forecast__icon">
             <span class="hourly-forecast__time">0 AM</span>
           </div>
-          <span class="hourly-forecast__temperature">16°</span>
+          <span class="hourly-forecast__temperature">62°</span>
         </li>
         <li class="hourly-forecast__item">
           <div class="hourly-forecast__sub-item">
             <img src="assets/images/icon-overcast.webp" alt="" class="hourly-forecast__icon">
             <span class="hourly-forecast__time">1 AM</span>
           </div>
-          <span class="hourly-forecast__temperature">16°</span>
+          <span class="hourly-forecast__temperature">62°</span>
         </li>
       </ul>
     </section>

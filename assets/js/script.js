@@ -35,6 +35,7 @@ const unitsToggle = document.querySelector(".units__toggle");
 
 const form = document.querySelector(".form");
 const inputForm = document.querySelector("#city");
+const cityDropdown = document.querySelector("#city-dropdown");
 const searchProgress = document.querySelector("#search-progress");
 const errorMessage = document.querySelector(".error-message");
 const weatherAppMain = document.querySelector(".weather-app-main");
@@ -55,6 +56,7 @@ const hourlyList = document.querySelector(".hourly-forecast__list");
 const apiErrorSection = document.querySelector("#api-error-state");
 const retryButton = document.querySelector("#retry-button");
 
+let debounceTimer = null;
 let currentWeatherData = null;
 let currentActiveDayIndex = 0;
 let isImperial = false;
@@ -75,6 +77,7 @@ const formattedDatetime = datetime.toLocaleDateString('en-US', {
 });
 
 function setUIState(state, message = "") {
+  clearDropdown();
   const dashboard = document.querySelector(".weather-dashboard") || document.body;
 
   form.removeAttribute("aria-busy");
@@ -221,6 +224,21 @@ function clearUIForLoading() {
   }
 }
 
+inputForm.addEventListener("input", (e) => {
+  const query = e.target.value.trim();
+
+  clearTimeout(debounceTimer);
+
+  if (query.length < 3) {
+    clearDropdown();
+    return;
+  }
+
+  debounceTimer = setTimeout(() => {
+    fetchCitySuggestions(query);
+  }, 350);
+});
+
 unitsButton.addEventListener("click", (e) => {
   e.stopPropagation();
   const isHidden = unitsMenu.hasAttribute("hidden");
@@ -297,7 +315,11 @@ document.addEventListener("click", (e) => {
     hourlyDayMenu.setAttribute("hidden", "");
     hourlyForecastBtn.setAttribute("aria-expanded", "false");
   }
-})
+
+  if (cityDropdown && !form.contains(e.target)) {
+    clearDropdown();
+  }
+});
 
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
@@ -306,8 +328,10 @@ document.addEventListener("keydown", (e) => {
 
     hourlyDayMenu.setAttribute("hidden", "");
     hourlyForecastBtn.setAttribute("aria-expanded", "false");
+
+    clearDropdown();
   }
-})
+});
 
 function saveSelectedTemperature() {
   temperatures.forEach(temperature => {
@@ -532,6 +556,76 @@ async function getWeather(latitude, longitude) {
     console.error("An error occurred while fetching the data:", error.message);
     throw error;
   }
+}
+
+function clearDropdown() {
+  if (cityDropdown) {
+    cityDropdown.innerHTML = "";
+    cityDropdown.classList.add("hidden");
+  }
+}
+
+async function fetchCitySuggestions(query) {
+  const url = `${GEOCODING_BASE_URL}?name=${encodeURIComponent(query)}&count=5&language=pt&format=json`;
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) return;
+
+    const data = await response.json();
+
+    if (!data.results || data.results.length === 0) {
+      clearDropdown();
+      return;
+    }
+
+    renderDropdownSuggestions(data.results);
+  } catch (error) {
+    console.error("Error fetching city suggestions:", error.message);
+    clearDropdown();
+  }
+}
+
+function renderDropdownSuggestions(cities) {
+  if (!cityDropdown) return;
+
+  cityDropdown.innerHTML = "";
+
+  cities.forEach(city => {
+    const li = document.createElement("li");
+    li.classList.add("city-dropdown__item");
+
+    const optionBtn = document.createElement("button");
+    optionBtn.type = "button";
+    optionBtn.classList.add("city-dropdown__button");
+
+    const cityName = city.name;
+    const countryName = city.country ? `, ${city.country}` : "";
+    const fullLocation = `${cityName}${countryName}`;
+
+    optionBtn.textContent = fullLocation;
+
+    optionBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      inputForm.value = fullLocation;
+      clearDropdown();
+
+      lastSearchedCity = fullLocation;
+      setUIState("loading");
+      currentLocation.textContent = fullLocation;
+      
+      getWeather(city.latitude, city.longitude)
+        .then(() => setUIState("success"))
+        .catch(() => setUIState("api-error"));
+    });
+
+    li.appendChild(optionBtn);
+    cityDropdown.appendChild(li);
+  });
+
+  cityDropdown.classList.remove("hidden");
 }
 
 async function searchCity(city) {
