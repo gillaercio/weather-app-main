@@ -113,7 +113,8 @@ input[type="radio"] {
 
 .units__fieldset label:has(input[type="radio"]:checked) {
   background-color: var(--neutral-700);
-  background-image: url("/assets/images/icon-checkmark.svg");
+  /* background-image: url("/assets/images/icon-checkmark.svg"); */
+  background-image: url("../images/icon-checkmark.svg");
   background-repeat: no-repeat;
   background-position: 95% 50%;
   border-radius: 0.8rem;
@@ -250,7 +251,8 @@ form[aria-busy="true"] {
   font-size: var(--txt-sm);
   color: var(--neutral-0);
   background-color: var(--neutral-800);
-  background-image: url("/assets/images/icon-search.svg");
+  /* background-image: url("/assets/images/icon-search.svg"); */
+  background-image: url("../images/icon-search.svg");
   background-repeat: no-repeat;
   background-position: 10% 50%;
 }
@@ -431,7 +433,8 @@ button:focus-visible {
   align-items: center;
   justify-content: center;
   height: 28.8rem;
-  background-image: url("/assets/images/bg-today-small.svg");
+  /* background-image: url("/assets/images/bg-today-small.svg"); */
+  background-image: url("../images/bg-today-small.svg");
   background-repeat: no-repeat;
   background-size: cover;
   border-radius: 0.6rem;
@@ -900,7 +903,8 @@ button:focus-visible {
     justify-content: space-between;
     height: 31rem;
     padding-inline: 3rem;
-    background-image: url("/assets/images/bg-today-large.svg");
+    /* background-image: url("/assets/images/bg-today-large.svg"); */
+    background-image: url("../images/bg-today-large.svg");
     background-size: contain;
   }
 

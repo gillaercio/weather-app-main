@@ -563,6 +563,10 @@ function clearDropdown() {
     cityDropdown.innerHTML = "";
     cityDropdown.classList.add("hidden");
   }
+
+  if (inputForm) {
+    inputForm.setAttribute("aria-expanded", "false");
+  }
 }
 
 async function fetchCitySuggestions(query) {
@@ -594,6 +598,7 @@ function renderDropdownSuggestions(cities) {
   cities.forEach(city => {
     const li = document.createElement("li");
     li.classList.add("city-dropdown__item");
+    li.setAttribute("role", "option");
 
     const optionBtn = document.createElement("button");
     optionBtn.type = "button";
@@ -626,6 +631,10 @@ function renderDropdownSuggestions(cities) {
   });
 
   cityDropdown.classList.remove("hidden");
+
+  if (inputForm) {
+    inputForm.setAttribute("aria-expanded", "true");
+  }
 }
 
 async function searchCity(city) {

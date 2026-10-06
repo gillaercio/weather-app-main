@@ -67,7 +67,7 @@
     <form action="" class="form">
       <div class="form__group">
         <label for="city" class="visually-hidden">Search for a city</label>
-        <input type="text" id="city" class="form__input" name="city" placeholder="Search for a place..." aria-describedby="city-error">
+        <input type="text" id="city" class="form__input" name="city" placeholder="Search for a place..." aria-describedby="city-error" aria-autocomplete="list" aria-controls="city-dropdown" aria-expanded="false" role="combobox">
         <button type="submit" class="button">Search</button>
 
         <ul id="city-dropdown" class="city-dropdown hidden" role="listbox" aria-label="City suggestions"></ul>
@@ -78,7 +78,7 @@
         <span class="search-progress__text">Search in progress</span>
       </div>
 
-      <p id="city-error" class="error-message" aria-live="polite"></p>
+      <p id="city-error" class="error-message" aria-live="assertive" aria-atomic="true"></p>
     </form>
   </header>
   <section id="api-error-state" class="error-state hidden" aria-live="assertive">

@@ -10,7 +10,6 @@ html {
   font-size: 62.5%;
 }
 
-input[type="text"],
 button {
   cursor: pointer;
 }
