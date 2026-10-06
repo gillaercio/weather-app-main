@@ -323,11 +323,17 @@ document.addEventListener("click", (e) => {
 
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
-    unitsMenu.setAttribute("hidden", "");
-    unitsButton.setAttribute("aria-expanded", "false");
+    if (!unitsMenu.hasAttribute("hidden")) {
+      unitsMenu.setAttribute("hidden", "");
+      unitsButton.setAttribute("aria-expanded", "false");
+      unitsButton.focus();
+    }
 
-    hourlyDayMenu.setAttribute("hidden", "");
-    hourlyForecastBtn.setAttribute("aria-expanded", "false");
+    if (!hourlyDayMenu.hasAttribute("hidden")) {
+      hourlyDayMenu.setAttribute("hidden", "");
+      hourlyForecastBtn.setAttribute("aria-expanded", "false");
+      hourlyForecastBtn.focus();
+    }
 
     clearDropdown();
   }
