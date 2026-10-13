@@ -778,6 +778,10 @@ button:focus-visible {
     width: 30rem;
   }
 
+  .hourly-forecast__button {
+    padding: 1rem 1.2rem;
+  }
+
   .hourly-forecast__list {
     max-height: 42rem;
   }

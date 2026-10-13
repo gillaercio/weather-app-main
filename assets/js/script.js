@@ -1,27 +1,4 @@
-// Etapa JS 1 — DOM
-// - selecionar elementos -> testar console.log
-
-// Etapa JS 2 — Menu de unidades
-// - abrir
-// - fechar
-// - selecionar
-
-// Etapa JS 3 — formulário
-// - submit -> capturar cidade -> validar entrada
-
-// Etapa JS 4 — API
-// - fetch -> async/await -> response -> JSON
-
-// Etapa JS 5 — clima atual
-// - cidade
-// - data
-// - temperatura
-// - ícone
-
-// Etapa JS 6 — cards
-// - current results -> daily forecast -> hourly forecast
 const GEOCODING_BASE_URL = "https://geocoding-api.open-meteo.com/v1/search";
-// const GEOCODING_BASE_URL = "https://geocoding-api.open-meteo.com/v1/search_INVALIDA";
 const WEATHER_BASE_URL = "https://api.open-meteo.com/v1/forecast";
 const ICONS_PATH = "assets/images/";
 
@@ -76,58 +53,125 @@ const formattedDatetime = datetime.toLocaleDateString('en-US', {
   year: 'numeric'
 });
 
+function getWeatherIcon(code) {
+  switch (code) {
+    case 0:
+    case 1:
+      return `${ICONS_PATH}icon-sunny.webp`;
+    case 2:
+      return `${ICONS_PATH}icon-partly-cloudy.webp`;
+    case 3:
+      return `${ICONS_PATH}icon-overcast.webp`;
+    case 45:
+      return `${ICONS_PATH}icon-fog.webp`;
+    case 51:
+    case 53:
+    case 55:
+    case 56:
+    case 57:
+      return `${ICONS_PATH}icon-drizzle.webp`;
+    case 61:
+    case 63:
+    case 65:
+    case 66:
+    case 67:
+    case 80:
+    case 81:
+    case 82:
+      return `${ICONS_PATH}icon-rain.webp`;
+    case 71:
+    case 73:
+    case 75:
+    case 85:
+    case 86:
+      return `${ICONS_PATH}icon-snow.webp`;
+    case 95:
+    case 96:
+    case 99:
+      return `${ICONS_PATH}icon-storm.webp`;
+    default:
+      return `${ICONS_PATH}icon-sunny.webp`;
+  }
+}
+
+function formatTemp(celsiusValue) {
+  if (currentUnits.temperature === 'fahrenheit') {
+    const fahrenheit = Math.round((celsiusValue * 9) / 5 + 32);
+    return `${fahrenheit}°`;
+  }
+  return `${Math.round(celsiusValue)}°`;
+}
+
+function formatWind(kmhValue) {
+  if (currentUnits.wind === 'mph') {
+    const mph = Math.round(kmhValue / 1.609);
+    return `${mph} mph`;
+  }
+  return `${Math.round(kmhValue)} km/h`;
+}
+
+function formatPrecipitation(mmValue) {
+  if (currentUnits.precipitation === 'in') {
+    const inches = (mmValue / 25.4).toFixed(2);
+    return `${inches} in`;
+  }
+  return `${mmValue} mm`;
+}
+
+function saveSelectedTemperature() {
+  temperatures.forEach(temperature => {
+    temperature.checked = (temperature.value === currentUnits.temperature);
+  });
+}
+
+function saveSelectedWind() {
+  winds.forEach(wind => {
+    wind.checked = (wind.value === currentUnits.wind);
+  });
+}
+
+function saveSelectedPrecipitation() {
+  precipitations.forEach(precipitation => {
+    precipitation.checked = (precipitation.value === currentUnits.precipitation);
+  });
+}
+
 function setUIState(state, message = "") {
   clearDropdown();
   const dashboard = document.querySelector(".weather-dashboard") || document.body;
+  const submitButton = form.querySelector('button[type="submit"]');
 
   form.removeAttribute("aria-busy");
   if (errorMessage) errorMessage.textContent = "";
-
-  const submitButton = form.querySelector('button[type="submit"]');
+  if (inputForm) inputForm.disabled = false;
+  if (submitButton) submitButton.disabled = false;
+  dashboard.classList.remove("is-loading");
+  if (searchProgress) searchProgress.classList.add("hidden");
 
   switch (state) {
     case "loading":
       form.setAttribute("aria-busy", "true");
-
       if (inputForm) inputForm.disabled = true;
       if (submitButton) submitButton.disabled = true;
       dashboard.classList.add("is-loading");
-
       if (searchProgress) searchProgress.classList.remove("hidden");
-
       if (headerTitle) headerTitle.classList.remove("hidden");
       if (form) form.classList.remove("hidden");
-
       currentResultValues.forEach(el => el.textContent = "-");
-
       if (apiErrorSection) apiErrorSection.classList.add("hidden");
       if (weatherAppMain) weatherAppMain.classList.remove("hidden");
       clearUIForLoading();
       break;
     case "success":
-      if (inputForm) inputForm.disabled = false;
-      if (submitButton) submitButton.disabled = false;
-      dashboard.classList.remove("is-loading");
-
-      if (searchProgress) searchProgress.classList.add("hidden");
-
       if (headerTitle) headerTitle.classList.remove("hidden");
       if (form) form.classList.remove("hidden");
-
       if (apiErrorSection) apiErrorSection.classList.add("hidden");
       if (weatherAppMain) weatherAppMain.classList.remove("hidden");
       break;
     case "api-error":
-      if (inputForm) inputForm.disabled = false;
-      if (submitButton) submitButton.disabled = false;
-      dashboard.classList.remove("is-loading");
-
-      if (searchProgress) searchProgress.classList.add("hidden");
-
       if (headerTitle) headerTitle.classList.add("hidden");
       if (form) form.classList.add("hidden");
       if (weatherAppMain) weatherAppMain.classList.add("hidden");
-
       if (apiErrorSection) {
         apiErrorSection.classList.remove("error-state--no-results");
         if (retryButton) retryButton.classList.remove("hidden");
@@ -135,16 +179,9 @@ function setUIState(state, message = "") {
       }
       break;
     case "no-results":
-      if (inputForm) inputForm.disabled = false;
-      if (submitButton) submitButton.disabled = false;
-      dashboard.classList.remove("is-loading");
-
-      if (searchProgress) searchProgress.classList.add("hidden");
-
       if (headerTitle) headerTitle.classList.remove("hidden");
       if (form) form.classList.remove("hidden");
       if (weatherAppMain) weatherAppMain.classList.add("hidden");
-
       if (apiErrorSection) {
         apiErrorSection.classList.add("error-state--no-results");
         apiErrorSection.querySelector(".error-state__title").textContent = "No search result found.";
@@ -154,14 +191,7 @@ function setUIState(state, message = "") {
       }
       break;
     case "empty":
-      if (inputForm) inputForm.disabled = false;
-      if (submitButton) submitButton.disabled = false;
-      dashboard.classList.remove("is-loading");
-
-      if (searchProgress) searchProgress.classList.add("hidden");
-
       if (errorMessage) errorMessage.textContent = message;
-
       if (headerTitle) headerTitle.classList.remove("hidden");
       if (form) form.classList.remove("hidden");
       break;
@@ -223,6 +253,263 @@ function clearUIForLoading() {
     }
   }
 }
+
+function clearDropdown() {
+  if (cityDropdown) {
+    cityDropdown.innerHTML = "";
+    cityDropdown.classList.add("hidden");
+  }
+
+  if (inputForm) {
+    inputForm.setAttribute("aria-expanded", "false");
+  }
+}
+
+function renderAllUI(data) {
+  if (!data) return;
+
+  currentTemperature.textContent = formatTemp(data.current.temperature_2m);
+  currentResultValues[0].textContent = formatTemp(data.current.temperature_2m);
+  currentResultValues[1].textContent = `${data.current.relative_humidity_2m}%`;
+  currentResultValues[2].textContent = formatWind(data.current.wind_speed_10m);
+  currentResultValues[3].textContent = formatPrecipitation(data.current.precipitation);
+
+  for (let i = 0; i < dailyForecastItems.length; i++) {
+    const item = dailyForecastItems[i];
+    item.querySelector(".daily-forecast__temperature-max").textContent = formatTemp(data.daily.temperature_2m_max[i]);
+    item.querySelector(".daily-forecast__temperature-min").textContent = formatTemp(data.daily.temperature_2m_min[i]);
+  }
+
+  renderHourlyForecast(currentActiveDayIndex, data);
+}
+
+function renderHourlyForecast(dayIndex, data) {
+  hourlyList.innerHTML = "";
+
+  const hourlyTimes = data.hourly.time;
+  const hourlyTemperatures = data.hourly.temperature_2m;
+  const hourlyWeatherCodes = data.hourly.weather_code;
+
+  let startHourIndex = dayIndex * 24;
+  let endHourIndex = startHourIndex + 24;
+
+  if(dayIndex === 0) {
+    const currentHour = new Date().getHours();
+    const foundIndex = hourlyTimes.findIndex(time => new Date(time).getHours() === currentHour);
+    if (foundIndex !== -1) {
+      startHourIndex = foundIndex;
+    }
+  }
+
+  const fragment = document.createDocumentFragment();
+
+  for (let i = startHourIndex; i < endHourIndex; i++) {
+    const timeString = hourlyTimes[i];
+    const tempFormatted = formatTemp(hourlyTemperatures[i]);
+    const code = hourlyWeatherCodes[i];
+
+    const dateObj = new Date(timeString);
+    const formattedHour = dateObj.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      hour12: true
+    });
+
+    const li = document.createElement("li");
+    li.classList.add("hourly-forecast__item");
+
+    li.innerHTML = `
+      <div class="hourly-forecast__sub-item">
+        <img src="${getWeatherIcon(code)}" alt="" class="hourly-forecast__icon">
+        <span class="hourly-forecast__time">${formattedHour}</span>
+      </div>
+      <span class="hourly-forecast__temperature">${tempFormatted}</span>
+    `;
+    fragment.appendChild(li);
+  }
+  hourlyList.appendChild(fragment);
+}
+
+function renderDropdownSuggestions(cities) {
+  if (!cityDropdown) return;
+
+  cityDropdown.innerHTML = "";
+
+  cities.forEach(city => {
+    const li = document.createElement("li");
+    li.classList.add("city-dropdown__item");
+    li.setAttribute("role", "option");
+
+    const optionBtn = document.createElement("button");
+    optionBtn.type = "button";
+    optionBtn.classList.add("city-dropdown__button");
+
+    const cityName = city.name;
+    const countryName = city.country ? `, ${city.country}` : "";
+    const fullLocation = `${cityName}${countryName}`;
+
+    optionBtn.textContent = fullLocation;
+
+    optionBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      inputForm.value = fullLocation;
+      clearDropdown();
+
+      lastSearchedCity = fullLocation;
+      setUIState("loading");
+      currentLocation.textContent = fullLocation;
+      
+      getWeather(city.latitude, city.longitude)
+        .then(() => setUIState("success"))
+        .catch(() => setUIState("api-error"));
+    });
+
+    li.appendChild(optionBtn);
+    cityDropdown.appendChild(li);
+  });
+
+  cityDropdown.classList.remove("hidden");
+
+  if (inputForm) {
+    inputForm.setAttribute("aria-expanded", "true");
+  }
+}
+
+async function fetchCitySuggestions(query) {
+  const url = `${GEOCODING_BASE_URL}?name=${encodeURIComponent(query)}&count=5&language=pt&format=json`;
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) return;
+
+    const data = await response.json();
+
+    if (!data.results || data.results.length === 0) {
+      clearDropdown();
+      return;
+    }
+
+    renderDropdownSuggestions(data.results);
+  } catch (error) {
+    console.error("Error fetching city suggestions:", error.message);
+    clearDropdown();
+  }
+}
+
+async function searchCity(city) {
+  lastSearchedCity = city;
+  setUIState("loading");
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+  const url = `${GEOCODING_BASE_URL}?name=${encodeURIComponent(city)}&count=1&language=pt&format=json`;
+
+  try {
+    const response = await fetch(url, { signal: controller.signal });
+    clearTimeout(timeoutId);
+    
+    if (!response.ok) {
+      throw new Error(`Network error: status ${response.status}`);
+    }
+    
+    const data = await response.json();
+
+    if(!data.results || data.results.length === 0) {
+      setUIState("no-results");
+      return;
+    }
+
+    const { name, country, latitude, longitude } = data.results[0];
+    currentLocation.textContent = `${name}, ${country}`;
+
+    await getWeather(latitude, longitude);
+    setUIState("success");
+  } catch (error) {
+    clearTimeout(timeoutId);
+    console.error("An error occurred while fetching the data:", error.message);
+    setUIState("api-error");
+  }
+}
+
+async function getWeather(latitude, longitude) {
+  const url = `${WEATHER_BASE_URL}?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code,precipitation&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto&hourly=temperature_2m,weather_code`;
+
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`Network error: status ${response.status}`);
+    }
+
+    const data = await response.json();
+    currentWeatherData = data;
+    currentActiveDayIndex = 0;
+
+    currentDate.textContent = formattedDatetime;
+    currentIcon.src = getWeatherIcon(data.current.weather_code);
+
+    hourlyDayMenu.innerHTML = "";
+    hourlyDayMenu.setAttribute("hidden", "");
+    hourlyForecastBtn.setAttribute("aria-expanded", "false");
+
+    for (let i = 0; i < dailyForecastItems.length; i++) {
+      const item = dailyForecastItems[i];
+      const [year, month, day] = data.daily.time[i].split("-");
+      const date = new Date(year, month - 1, day);
+
+      const formattedDayShort = date.toLocaleDateString('en-US', {
+        weekday: 'short'
+      });
+      const formattedDayLong = date.toLocaleDateString('en-US', {
+        weekday: 'long'
+      });
+
+      item.querySelector(".daily-forecast__icon").src = getWeatherIcon(data.daily.weather_code[i]);
+      item.querySelector(".daily-forecast__day").textContent = formattedDayShort;
+
+      if (i === 0) {
+        hourlyForecastDayText.textContent = formattedDayLong;
+      }
+
+      const optionBtn = document.createElement("button");
+      optionBtn.type = "button";
+      optionBtn.classList.add("hourly-forecast__option");
+      optionBtn.textContent = formattedDayLong;
+
+      optionBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        currentActiveDayIndex = i;
+        hourlyForecastDayText.textContent = formattedDayLong;
+        renderHourlyForecast(i, data);
+        
+        hourlyDayMenu.setAttribute("hidden", "");
+        hourlyForecastBtn.setAttribute("aria-expanded", "false");
+      });
+
+      hourlyDayMenu.appendChild(optionBtn);
+    }
+
+    renderAllUI(data);
+
+    return {data};
+  } catch (error) {
+    console.error("An error occurred while fetching the data:", error.message);
+    throw error;
+  }
+}
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const inputValue = inputForm.value.trim();
+  if (!inputValue) {
+    setUIState("empty", "Please, type the name of city before searching.");
+    return;
+  }
+
+  searchCity(inputValue);
+})
 
 inputForm.addEventListener("input", (e) => {
   const query = e.target.value.trim();
@@ -339,341 +626,6 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-function saveSelectedTemperature() {
-  temperatures.forEach(temperature => {
-    temperature.checked = (temperature.value === currentUnits.temperature);
-  });
-}
-
-function saveSelectedWind() {
-  winds.forEach(wind => {
-    wind.checked = (wind.value === currentUnits.wind);
-  });
-}
-
-function saveSelectedPrecipitation() {
-  precipitations.forEach(precipitation => {
-    precipitation.checked = (precipitation.value === currentUnits.precipitation);
-  });
-}
-
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const inputValue = inputForm.value.trim();
-  if (!inputValue) {
-    setUIState("empty", "Please, type the name of city before searching.");
-    return;
-  }
-
-  searchCity(inputValue);
-})
-
-function getWeatherIcon(code) {
-  switch (code) {
-    case 0:
-    case 1:
-      return `${ICONS_PATH}icon-sunny.webp`;
-    case 2:
-      return `${ICONS_PATH}icon-partly-cloudy.webp`;
-    case 3:
-      return `${ICONS_PATH}icon-overcast.webp`;
-    case 45:
-      return `${ICONS_PATH}icon-fog.webp`;
-    case 51:
-    case 53:
-    case 55:
-    case 56:
-    case 57:
-      return `${ICONS_PATH}icon-drizzle.webp`;
-    case 61:
-    case 63:
-    case 65:
-    case 66:
-    case 67:
-    case 80:
-    case 81:
-    case 82:
-      return `${ICONS_PATH}icon-rain.webp`;
-    case 71:
-    case 73:
-    case 75:
-    case 85:
-    case 86:
-      return `${ICONS_PATH}icon-snow.webp`;
-    case 95:
-    case 96:
-    case 99:
-      return `${ICONS_PATH}icon-storm.webp`;
-    default:
-      return `${ICONS_PATH}icon-sunny.webp`;
-  }
-}
-
-function formatTemp(celsiusValue) {
-  if (currentUnits.temperature === 'fahrenheit') {
-    const fahrenheit = Math.round((celsiusValue * 9) / 5 + 32);
-    return `${fahrenheit}°`;
-  }
-  return `${Math.round(celsiusValue)}°`;
-}
-
-function formatWind(kmhValue) {
-  if (currentUnits.wind === 'mph') {
-    const mph = Math.round(kmhValue / 1.609);
-    return `${mph} mph`;
-  }
-  return `${Math.round(kmhValue)} km/h`;
-}
-
-function formatPrecipitation(mmValue) {
-  if (currentUnits.precipitation === 'in') {
-    const inches = (mmValue / 25.4).toFixed(2);
-    return `${inches} in`;
-  }
-  return `${mmValue} mm`;
-}
-
-function renderAllUI(data) {
-  if (!data) return;
-
-  currentTemperature.textContent = formatTemp(data.current.temperature_2m);
-  currentResultValues[0].textContent = formatTemp(data.current.temperature_2m);
-  currentResultValues[1].textContent = `${data.current.relative_humidity_2m}%`;
-  currentResultValues[2].textContent = formatWind(data.current.wind_speed_10m);
-  currentResultValues[3].textContent = formatPrecipitation(data.current.precipitation);
-
-  for (let i = 0; i < dailyForecastItems.length; i++) {
-    const item = dailyForecastItems[i];
-    item.querySelector(".daily-forecast__temperature-max").textContent = formatTemp(data.daily.temperature_2m_max[i]);
-    item.querySelector(".daily-forecast__temperature-min").textContent = formatTemp(data.daily.temperature_2m_min[i]);
-  }
-
-  renderHourlyForecast(currentActiveDayIndex, data);
-}
-
-function renderHourlyForecast(dayIndex, data) {
-  hourlyList.innerHTML = "";
-
-  const hourlyTimes = data.hourly.time;
-  const hourlyTemperatures = data.hourly.temperature_2m;
-  const hourlyWeatherCodes = data.hourly.weather_code;
-
-  let startHourIndex = dayIndex * 24;
-  let endHourIndex = startHourIndex + 24;
-
-  if(dayIndex === 0) {
-    const currentHour = new Date().getHours();
-    const foundIndex = hourlyTimes.findIndex(time => new Date(time).getHours() === currentHour);
-    if (foundIndex !== -1) {
-      startHourIndex = foundIndex;
-    }
-  }
-
-  const fragment = document.createDocumentFragment();
-
-  for (let i = startHourIndex; i < endHourIndex; i++) {
-    const timeString = hourlyTimes[i];
-    const tempFormatted = formatTemp(hourlyTemperatures[i]);
-    const code = hourlyWeatherCodes[i];
-
-    const dateObj = new Date(timeString);
-    const formattedHour = dateObj.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      hour12: true
-    });
-
-    const li = document.createElement("li");
-    li.classList.add("hourly-forecast__item");
-
-    li.innerHTML = `
-      <div class="hourly-forecast__sub-item">
-        <img src="${getWeatherIcon(code)}" alt="" class="hourly-forecast__icon">
-        <span class="hourly-forecast__time">${formattedHour}</span>
-      </div>
-      <span class="hourly-forecast__temperature">${tempFormatted}</span>
-    `;
-    fragment.appendChild(li);
-  }
-  hourlyList.appendChild(fragment);
-}
-
-async function getWeather(latitude, longitude) {
-  const url = `${WEATHER_BASE_URL}?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code,precipitation&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto&hourly=temperature_2m,weather_code`;
-
-  try {
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error(`Network error: status ${response.status}`);
-    }
-
-    const data = await response.json();
-    currentWeatherData = data;
-    currentActiveDayIndex = 0;
-
-    currentDate.textContent = formattedDatetime;
-    currentIcon.src = getWeatherIcon(data.current.weather_code);
-
-    hourlyDayMenu.innerHTML = "";
-    hourlyDayMenu.setAttribute("hidden", "");
-    hourlyForecastBtn.setAttribute("aria-expanded", "false");
-
-    for (let i = 0; i < dailyForecastItems.length; i++) {
-      const item = dailyForecastItems[i];
-      const [year, month, day] = data.daily.time[i].split("-");
-      const date = new Date(year, month - 1, day);
-
-      const formattedDayShort = date.toLocaleDateString('en-US', {
-        weekday: 'short'
-      });
-      const formattedDayLong = date.toLocaleDateString('en-US', {
-        weekday: 'long'
-      });
-
-      item.querySelector(".daily-forecast__icon").src = getWeatherIcon(data.daily.weather_code[i]);
-      item.querySelector(".daily-forecast__day").textContent = formattedDayShort;
-
-      if (i === 0) {
-        hourlyForecastDayText.textContent = formattedDayLong;
-      }
-
-      const optionBtn = document.createElement("button");
-      optionBtn.type = "button";
-      optionBtn.classList.add("hourly-forecast__option");
-      optionBtn.textContent = formattedDayLong;
-
-      optionBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        currentActiveDayIndex = i;
-        hourlyForecastDayText.textContent = formattedDayLong;
-        renderHourlyForecast(i, data);
-        
-        hourlyDayMenu.setAttribute("hidden", "");
-        hourlyForecastBtn.setAttribute("aria-expanded", "false");
-      });
-
-      hourlyDayMenu.appendChild(optionBtn);
-    }
-
-    renderAllUI(data);
-
-    return {data};
-  } catch (error) {
-    console.error("An error occurred while fetching the data:", error.message);
-    throw error;
-  }
-}
-
-function clearDropdown() {
-  if (cityDropdown) {
-    cityDropdown.innerHTML = "";
-    cityDropdown.classList.add("hidden");
-  }
-
-  if (inputForm) {
-    inputForm.setAttribute("aria-expanded", "false");
-  }
-}
-
-async function fetchCitySuggestions(query) {
-  const url = `${GEOCODING_BASE_URL}?name=${encodeURIComponent(query)}&count=5&language=pt&format=json`;
-
-  try {
-    const response = await fetch(url);
-    if (!response.ok) return;
-
-    const data = await response.json();
-
-    if (!data.results || data.results.length === 0) {
-      clearDropdown();
-      return;
-    }
-
-    renderDropdownSuggestions(data.results);
-  } catch (error) {
-    console.error("Error fetching city suggestions:", error.message);
-    clearDropdown();
-  }
-}
-
-function renderDropdownSuggestions(cities) {
-  if (!cityDropdown) return;
-
-  cityDropdown.innerHTML = "";
-
-  cities.forEach(city => {
-    const li = document.createElement("li");
-    li.classList.add("city-dropdown__item");
-    li.setAttribute("role", "option");
-
-    const optionBtn = document.createElement("button");
-    optionBtn.type = "button";
-    optionBtn.classList.add("city-dropdown__button");
-
-    const cityName = city.name;
-    const countryName = city.country ? `, ${city.country}` : "";
-    const fullLocation = `${cityName}${countryName}`;
-
-    optionBtn.textContent = fullLocation;
-
-    optionBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-
-      inputForm.value = fullLocation;
-      clearDropdown();
-
-      lastSearchedCity = fullLocation;
-      setUIState("loading");
-      currentLocation.textContent = fullLocation;
-      
-      getWeather(city.latitude, city.longitude)
-        .then(() => setUIState("success"))
-        .catch(() => setUIState("api-error"));
-    });
-
-    li.appendChild(optionBtn);
-    cityDropdown.appendChild(li);
-  });
-
-  cityDropdown.classList.remove("hidden");
-
-  if (inputForm) {
-    inputForm.setAttribute("aria-expanded", "true");
-  }
-}
-
-async function searchCity(city) {
-  lastSearchedCity = city;
-  setUIState("loading");
-
-  const url = `${GEOCODING_BASE_URL}?name=${encodeURIComponent(city)}&count=1&language=pt&format=json`;
-
-  try {
-    const response = await fetch(url);
-    
-    if (!response.ok) {
-      throw new Error(`Network error: status ${response.status}`);
-    }
-    
-    const data = await response.json();
-
-    if(!data.results || data.results.length === 0) {
-      setUIState("no-results");
-      return;
-    }
-
-    const { name, country, latitude, longitude } = data.results[0];
-    currentLocation.textContent = `${name}, ${country}`;
-
-    await getWeather(latitude, longitude);
-    setUIState("success");
-  } catch (error) {
-    console.error("An error occurred while fetching the data:", error.message);
-    setUIState("api-error");
-  }
-}
-
 if (retryButton) {
   retryButton.addEventListener("click", () => {
     if (lastSearchedCity) {
@@ -683,22 +635,3 @@ if (retryButton) {
     }
   });
 }
-
-// Etapa JS 7 — estados
-// - loading
-// - success
-// - error
-// - empty
-
-// Etapa JS 8 — acessibilidade dinâmica
-// - aria-expanded
-// - aria-busy
-// - aria-live
-// - foco
-// - mensagens de erro
-
-// Etapa JS 9 — refinamento
-// - tratamento de erros
-// - casos extremos
-// - organização do código
-// - redução de repetição
