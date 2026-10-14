@@ -5,12 +5,16 @@ export const appState = {
   lastSearchedCity: "",
   debounceTimer: null,
   currentUnits: {
-    temperature: "celsius",
-    wind: "km/h",
-    precipitation: "mm"
+    temperature: "fahrenheit",
+    wind: "mph",
+    precipitation: "in"
   }
 };
 
 export function initAppState(defaultUnits) {
   appState.currentUnits = { ...defaultUnits };
+  appState.isImperial =
+    appState.currentUnits.temperature === "fahrenheit" ||
+    appState.currentUnits.wind === "mph" ||
+    appState.currentUnits.precipitation === "in";
 }
