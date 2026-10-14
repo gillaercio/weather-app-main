@@ -8,7 +8,9 @@ export const appState = {
     temperature: "fahrenheit",
     wind: "mph",
     precipitation: "in"
-  }
+  },
+  language: "en",
+  availableLanguages: ["en", "es", "it", "fr", "de", "pt"]
 };
 
 export function initAppState(defaultUnits) {
