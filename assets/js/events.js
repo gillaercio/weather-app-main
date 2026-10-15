@@ -1,4 +1,4 @@
-import { appState } from "./state.js";
+import { appState, setLanguage, getTranslation } from "./state.js";
 import { fetchCitySuggestions, fetchCityByName, fetchWeather } from "./api.js";
 import {
   renderAllUI,
@@ -28,6 +28,8 @@ export function bindEvents() {
   const cityDropdown = document.querySelector("#city-dropdown");
   const unitsButton = document.querySelector(".units__button");
   const unitsMenu = document.querySelector(".units__menu");
+  const languageButton = document.querySelector(".language__button");
+  const languageMenu = document.querySelector(".language__menu");
   const retryButton = document.querySelector("#retry-button");
   const unitsToggle = document.querySelector(".units__toggle");
   const temperatures = document.querySelectorAll('input[name="temperature"]');
@@ -42,6 +44,11 @@ export function bindEvents() {
 
   syncUnitControls();
   syncUnitToggleText();
+
+  const currentLanguageLabel = document.querySelector(".language__button");
+  if (currentLanguageLabel) {
+    currentLanguageLabel.textContent = appState.language.toUpperCase();
+  }
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -150,6 +157,22 @@ export function bindEvents() {
     });
   }
 
+  if (languageButton && languageMenu) {
+    languageButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+
+      const isHidden = languageMenu.hasAttribute("hidden");
+
+      if (isHidden) {
+        languageMenu.removeAttribute("hidden");
+        languageButton.setAttribute("aria-expanded", "true");
+      } else {
+        languageMenu.setAttribute("hidden", "");
+        languageButton.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
+
   temperatures.forEach((radio) => {
     radio.addEventListener("change", (event) => {
       appState.currentUnits.temperature = event.target.value;
@@ -186,6 +209,25 @@ export function bindEvents() {
       }
 
       syncUnitControls();
+    });
+  });
+
+  const languageOptions = document.querySelectorAll('input[name="language"]');
+
+  languageOptions.forEach((radio) => {
+    radio.addEventListener("change", (event) => {
+      const selectedLanguage = event.target.value;
+
+      setLanguage(selectedLanguage);
+
+      if (appState.currentWeatherData) {
+        renderAllUI(appState.currentWeatherData);
+      }
+
+      if (languageMenu) {
+        languageMenu.setAttribute("hidden", "");
+        languageButton?.setAttribute("aria-expanded", "false");
+      }
     });
   });
 
