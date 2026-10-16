@@ -1,7 +1,8 @@
 import { config } from "./config.js";
+import { appState } from "./state.js";
 
 export async function fetchCitySuggestions(query) {
-  const url = `${config.geocodingBaseUrl}?name=${encodeURIComponent(query)}&count=5&language=pt&format=json`;
+  const url = `${config.geocodingBaseUrl}?name=${encodeURIComponent(query)}&count=5&language=${appState.language}&format=json`;
 
   const response = await fetch(url);
 
@@ -13,7 +14,7 @@ export async function fetchCitySuggestions(query) {
 }
 
 export async function fetchCityByName(city) {
-  const url = `${config.geocodingBaseUrl}?name=${encodeURIComponent(city)}&count=1&language=pt&format=json`;
+  const url = `${config.geocodingBaseUrl}?name=${encodeURIComponent(city)}&count=1&language=${appState.language}&format=json`;
 
   const response = await fetch(url);
 
@@ -25,7 +26,7 @@ export async function fetchCityByName(city) {
 }
 
 export async function fetchWeather(latitude, longitude) {
-  const url = `${config.weatherBaseUrl}?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code,precipitation&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto&hourly=temperature_2m,weather_code`;
+  const url = `${config.weatherBaseUrl}?latitude=${latitude}&longitude=${longitude}&language=${appState.language}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code,precipitation&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto&hourly=temperature_2m,weather_code`;
 
   const response = await fetch(url);
 
