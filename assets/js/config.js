@@ -2,14 +2,22 @@ export const config = {
   geocodingBaseUrl: "https://geocoding-api.open-meteo.com/v1/search",
   weatherBaseUrl: "https://api.open-meteo.com/v1/forecast",
   iconsPath: "assets/images/",
-    defaultLanguage: "en",
+  defaultLanguage: "en",
   supportedLanguages: ["en", "es", "it", "fr", "de", "pt"],
+  localeMap: {
+    en: "en-US",
+    es: "es-ES",
+    it: "it-IT",
+    fr: "fr-FR",
+    de: "de-DE",
+    pt: "pt-PT"
+  },
   translations: {
     en: {
       appName: "Weather App",
       searchPlaceholder: "Search for a city",
       emptyCity: "Please, type the name of city before searching.",
-      noResults: "No cities found.",
+      noResults: "No search result found.",
       apiError: "Unable to load weather data.",
       loading: "Loading weather data...",
       unitsLabel: "Units",

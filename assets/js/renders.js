@@ -1,4 +1,5 @@
-import { appState } from "./state.js";
+import { config } from "./config.js";
+import { appState, getTranslation } from "./state.js";
 import {
   formatTemp,
   formatWind,
@@ -49,7 +50,7 @@ export function clearUIForLoading() {
 
   if (currentIcon) {
     currentIcon.src = "assets/images/icon-loading.svg";
-    currentIcon.alt = "Loading...";
+    currentIcon.alt = getTranslation("loading");
   }
 
   dailyForecastItems.forEach((item) => {
@@ -90,6 +91,14 @@ export function setUIState(state, message = "") {
   const headerTitle = document.querySelector(".header__title");
   const searchProgress = document.querySelector("#search-progress");
   const submitButton = form ? form.querySelector('button[type="submit"]') : null;
+  const retryButton = document.querySelector("#retry-button");
+
+  const updateRetryButton = (isVisible) => {
+    if (!retryButton) return;
+
+    retryButton.hidden = !isVisible;
+    retryButton.style.display = isVisible ? "flex" : "none";
+  };
 
   if (errorMessage) errorMessage.textContent = "";
   if (inputForm) inputForm.disabled = false;
@@ -119,6 +128,8 @@ export function setUIState(state, message = "") {
   }
 
   if (state === "api-error") {
+    updateRetryButton(true);
+
     if (headerTitle) headerTitle.classList.add("hidden");
     if (form) form.classList.add("hidden");
     if (weatherAppMain) weatherAppMain.classList.add("hidden");
@@ -131,6 +142,8 @@ export function setUIState(state, message = "") {
   }
 
   if (state === "no-results") {
+    updateRetryButton(false);
+
     if (headerTitle) headerTitle.classList.remove("hidden");
     if (form) form.classList.remove("hidden");
     if (weatherAppMain) weatherAppMain.classList.add("hidden");
@@ -141,7 +154,7 @@ export function setUIState(state, message = "") {
       const title = apiErrorSection.querySelector(".error-state__title");
       const description = apiErrorSection.querySelector(".error-state__description");
 
-      if (title) title.textContent = "No search result found.";
+      if (title) title.textContent = getTranslation("noResults");
       if (description) description.textContent = "";
 
       apiErrorSection.classList.remove("hidden");
@@ -172,8 +185,9 @@ export function renderDailyForecast(data) {
     const [year, month, day] = data.daily.time[i].split("-");
     const date = new Date(year, month - 1, day);
 
-    const formattedDayShort = date.toLocaleDateString("en-US", { weekday: "short" });
-    const formattedDayLong = date.toLocaleDateString("en-US", { weekday: "long" });
+    const locale = config.localeMap[appState.language] || "en-US";
+    const formattedDayShort = date.toLocaleDateString(locale, { weekday: "short" });
+    const formattedDayLong = date.toLocaleDateString(locale, { weekday: "long" });
 
     const dayName = item.querySelector(".daily-forecast__day");
     const icon = item.querySelector(".daily-forecast__icon");
@@ -256,7 +270,8 @@ export function renderHourlyForecast(dayIndex, data) {
     const code = hourlyWeatherCodes[i];
 
     const dateObj = new Date(timeString);
-    const formattedHour = dateObj.toLocaleTimeString("en-US", {
+    const locale = config.localeMap[appState.language] || "en-US";
+    const formattedHour = dateObj.toLocaleTimeString(locale, {
       hour: "numeric",
       hour12: true
     });
@@ -323,7 +338,8 @@ export function renderAllUI(data) {
   }
 
   if (currentDate) {
-    currentDate.textContent = new Date().toLocaleDateString("en-US", {
+    const locale = config.localeMap[appState.language] || "en-US";
+    currentDate.textContent = new Date().toLocaleDateString(locale, {
       weekday: "long",
       month: "short",
       day: "numeric",

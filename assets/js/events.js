@@ -19,7 +19,7 @@ function syncUnitToggleText() {
     appState.currentUnits.wind === "mph" ||
     appState.currentUnits.precipitation === "in";
 
-  unitsToggle.textContent = appState.isImperial ? "Switch to Metric" : "Switch to Imperial";
+  unitsToggle.textContent = appState.isImperial ? getTranslation("switchToMetric") : getTranslation("switchToImperial");
 }
 
 export function bindEvents() {
@@ -56,7 +56,7 @@ export function bindEvents() {
     const city = inputForm.value.trim();
 
     if (!city) {
-      setUIState("empty", "Please, type the name of city before searching.");
+      setUIState("empty", getTranslation("emptyCity"));
       return;
     }
 
