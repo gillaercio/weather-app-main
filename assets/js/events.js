@@ -22,6 +22,66 @@ function syncUnitToggleText() {
   unitsToggle.textContent = appState.isImperial ? getTranslation("switchToMetric") : getTranslation("switchToImperial");
 }
 
+function syncLanguageUI() {
+  const languageButton = document.querySelector(".language__button");
+  const unitsButtonSpan = document.querySelector(".units__span");
+  const unitsToggle = document.querySelector(".units__toggle");
+  const headerTitle = document.querySelector(".header__title");
+  const searchInput = document.querySelector("#city");
+  const submitButton = document.querySelector(".button[type='submit']");
+  const searchProgressText = document.querySelector(".search-progress__text");
+  const dailyForecastTitle = document.querySelector(".daily-forecast__title");
+  const hourlyForecastTitle = document.querySelector(".hourly-forecast__title");
+
+  if (languageButton) {
+    languageButton.textContent = appState.language.toUpperCase();
+  }
+
+  if (unitsButtonSpan) {
+    unitsButtonSpan.textContent = getTranslation("unitsLabel");
+  }
+
+  if (unitsToggle) {
+    unitsToggle.textContent = appState.isImperial ? getTranslation("switchToMetric") : getTranslation("switchToImperial");
+  }
+
+  if (headerTitle) {
+    headerTitle.textContent = getTranslation("headerTitle");
+  }
+
+  if (searchInput) {
+    searchInput.placeholder = getTranslation("searchPlaceholder");
+  }
+
+  if (submitButton) {
+    submitButton.textContent = getTranslation("searchButton");
+  }
+
+  if (searchProgressText) {
+    searchProgressText.textContent = getTranslation("loading");
+  }
+
+  if (dailyForecastTitle) {
+    dailyForecastTitle.textContent = getTranslation("dailyForecast");
+  }
+
+  if (hourlyForecastTitle) {
+    hourlyForecastTitle.textContent = getTranslation("hourlyForecast");
+  }
+}
+
+function toggleLanguageMenu(forceOpen) {
+  const languageButton = document.querySelector(".language__button");
+  const languageMenu = document.querySelector(".language__menu");
+
+  if (!languageButton || !languageMenu) return;
+
+  const shouldOpen = typeof forceOpen === "boolean" ? forceOpen : languageMenu.hasAttribute("hidden");
+  
+  languageMenu.toggleAttribute("hidden", !shouldOpen);
+  languageButton.setAttribute("aria-expanded", String(shouldOpen));
+}
+
 export function bindEvents() {
   const form = document.querySelector(".form");
   const inputForm = document.querySelector("#city");
@@ -44,6 +104,7 @@ export function bindEvents() {
 
   syncUnitControls();
   syncUnitToggleText();
+  syncLanguageUI();
 
   const currentLanguageLabel = document.querySelector(".language__button");
   if (currentLanguageLabel) {
@@ -162,14 +223,8 @@ export function bindEvents() {
       event.stopPropagation();
 
       const isHidden = languageMenu.hasAttribute("hidden");
+      toggleLanguageMenu(isHidden);
 
-      if (isHidden) {
-        languageMenu.removeAttribute("hidden");
-        languageButton.setAttribute("aria-expanded", "true");
-      } else {
-        languageMenu.setAttribute("hidden", "");
-        languageButton.setAttribute("aria-expanded", "false");
-      }
     });
   }
 
@@ -219,14 +274,18 @@ export function bindEvents() {
       const selectedLanguage = event.target.value;
 
       setLanguage(selectedLanguage);
+      syncLanguageUI();
+
+      if (languageButton) {
+        languageButton.textContent = appState.language.toUpperCase();
+      }
 
       if (appState.currentWeatherData) {
         renderAllUI(appState.currentWeatherData);
       }
 
       if (languageMenu) {
-        languageMenu.setAttribute("hidden", "");
-        languageButton?.setAttribute("aria-expanded", "false");
+        toggleLanguageMenu(false);
       }
     });
   });
@@ -274,12 +333,11 @@ export function bindEvents() {
       unitsButton.setAttribute("aria-expanded", "false");
     }
 
-    if (
-      hourlyForecastBtn &&
-      hourlyDayMenu &&
-      !hourlyForecastBtn.contains(target) &&
-      !hourlyDayMenu.contains(target)
-    ) {
+    if (languageButton && languageMenu && !languageButton.contains(target) && !languageMenu.contains(target)) {
+      toggleLanguageMenu(false);
+    }
+
+    if (hourlyForecastBtn && hourlyDayMenu && !hourlyForecastBtn.contains(target) && !hourlyDayMenu.contains(target)) {
       hourlyDayMenu.setAttribute("hidden", "");
       hourlyForecastBtn.setAttribute("aria-expanded", "false");
     }
@@ -294,6 +352,10 @@ export function bindEvents() {
       if (unitsButton && unitsMenu && !unitsMenu.hasAttribute("hidden")) {
         unitsMenu.setAttribute("hidden", "");
         unitsButton.setAttribute("aria-expanded", "false");
+      }
+
+      if (languageButton && languageMenu && !languageMenu.hasAttribute("hidden")) {
+        toggleLanguageMenu(false);
       }
 
       if (hourlyForecastBtn && hourlyDayMenu && !hourlyDayMenu.hasAttribute("hidden")) {

@@ -300,6 +300,12 @@ export function renderAllUI(data) {
   const currentResultValues = document.querySelectorAll(".current-result__value");
   const currentIcon = document.querySelector(".current-temperature__icon");
   const currentDate = document.querySelector(".current-date");
+  const resultLabels = document.querySelectorAll(".current-result__label");
+
+  if (resultLabels[0]) resultLabels[0].textContent = getTranslation("feelslike");
+  if (resultLabels[1]) resultLabels[1].textContent = getTranslation("humidity");
+  if (resultLabels[2]) resultLabels[2].textContent = getTranslation("wind");
+  if (resultLabels[3]) resultLabels[3].textContent = getTranslation("precipitation");
 
   if (currentTemperature) {
     currentTemperature.textContent = formatTemp(

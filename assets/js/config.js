@@ -15,6 +15,8 @@ export const config = {
   translations: {
     en: {
       appName: "Weather App",
+      headerTitle: "How's the sky looking today?",
+      searchButton: "Search",
       searchPlaceholder: "Search for a city",
       emptyCity: "Please, type the name of city before searching.",
       noResults: "No search result found.",
@@ -26,12 +28,15 @@ export const config = {
       switchToImperial: "Switch to Imperial",
       dailyForecast: "Daily forecast",
       hourlyForecast: "Hourly forecast",
+      feelslike: "Feels like",
       humidity: "Humidity",
       wind: "Wind",
       precipitation: "Precipitation"
     },
     es: {
       appName: "Aplicación del clima",
+      headerTitle: "¿Cómo está el cielo hoy?",
+      searchButton: "Buscar",
       searchPlaceholder: "Buscar una ciudad",
       emptyCity: "Escribe el nombre de la ciudad antes de buscar.",
       noResults: "No se encontraron ciudades.",
@@ -43,12 +48,15 @@ export const config = {
       switchToImperial: "Cambiar a imperial",
       dailyForecast: "Pronóstico diario",
       hourlyForecast: "Pronóstico por horas",
+      feelslike: "Sensación",
       humidity: "Humedad",
       wind: "Viento",
       precipitation: "Precipitación"
     },
     it: {
       appName: "App meteo",
+      headerTitle: "Com'è il cielo oggi?",
+      searchButton: "Ricerca",
       searchPlaceholder: "Cerca una città",
       emptyCity: "Scrivi il nome della città prima di cercare.",
       noResults: "Nessuna città trovata.",
@@ -60,12 +68,15 @@ export const config = {
       switchToImperial: "Passa a imperiali",
       dailyForecast: "Previsioni giornaliere",
       hourlyForecast: "Previsioni orarie",
+      feelslike: "Percepita",
       humidity: "Umidità",
       wind: "Vento",
       precipitation: "Precipitazione"
     },
     fr: {
       appName: "Météo",
+      headerTitle: "Quel est l'aspect du ciel aujourd'hui ?",
+      searchButton: "Recherche",
       searchPlaceholder: "Rechercher une ville",
       emptyCity: "Saisissez le nom de la ville avant de rechercher.",
       noResults: "Aucune ville trouvée.",
@@ -77,12 +88,15 @@ export const config = {
       switchToImperial: "Passer en impérial",
       dailyForecast: "Prévision quotidienne",
       hourlyForecast: "Prévision horaire",
+      feelslike: "Ressentie",
       humidity: "Humidité",
       wind: "Vent",
       precipitation: "Précipitations"
     },
     de: {
       appName: "Wetter-App",
+      headerTitle: "Wie sieht der Himmel heute aus?",
+      searchButton: "Suchen",
       searchPlaceholder: "Stadt suchen",
       emptyCity: "Bitte geben Sie den Städtenamen ein, bevor Sie suchen.",
       noResults: "Keine Städte gefunden.",
@@ -94,12 +108,15 @@ export const config = {
       switchToImperial: "Zu imperial wechseln",
       dailyForecast: "Tagesvorhersage",
       hourlyForecast: "Stundenvorhersage",
+      feelslike: "Gefühlte",
       humidity: "Luftfeuchtigkeit",
       wind: "Wind",
       precipitation: "Niederschlag"
     },
     pt: {
       appName: "Aplicação do tempo",
+      headerTitle: "Como está o céu hoje?",
+      searchButton: "Pesquisar",
       searchPlaceholder: "Pesquisar uma cidade",
       emptyCity: "Escreva o nome da cidade antes de procurar.",
       noResults: "Nenhuma cidade encontrada.",
@@ -111,6 +128,7 @@ export const config = {
       switchToImperial: "Mudar para imperial",
       dailyForecast: "Previsão diária",
       hourlyForecast: "Previsão horária",
+      feelslike: "Sensação",
       humidity: "Humidade",
       wind: "Vento",
       precipitation: "Precipitação"

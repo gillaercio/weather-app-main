@@ -34,7 +34,14 @@ ul {
   width: 12rem;
 }
 
-.units {
+.header__controls {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.units,
+.language {
   position: relative;
 }
 
@@ -46,6 +53,57 @@ ul {
   background-color: var(--neutral-700);
   border: none;
   border-radius: 0.4rem;
+}
+
+.language__button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 6rem;
+  padding: 0.4rem 1.2rem;
+  font-size: var(--txt-sm);
+  font-weight: var(--fw-medium);
+  color: var(--neutral-0);
+  background-color: var(--neutral-800);
+  border: 1px solid var(--neutral-600);
+  border-radius: 0.6rem;
+}
+
+.language__menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  min-width: 18rem;
+  padding: 1rem;
+  background-color: var(--neutral-800);
+  border: 1px solid var(--neutral-600);
+  border-radius: 0.8rem;
+  position: absolute;
+  top: calc(100% + 0.8rem);
+  right: 0;
+  z-index: 20;
+}
+
+.language__menu[hidden] {
+  display: none;
+}
+
+.language__option {
+  display: flex;
+  align-items: center;
+  padding: 0.6rem 0.8rem;
+  font-size: var(--txt-sm);
+  color: var(--neutral-0);
+  border-radius: 0.6rem;
+  cursor: pointer;
+}
+
+.language__option input {
+  accent-color: var(--blue-500);
+}
+
+.language__option:hover {
+  background-color: var(--neutral-700);
 }
 
 .units__icon-unit,
@@ -831,6 +889,10 @@ button:focus-visible {
 
   .units__toggle {
     font-size: var(--txt-lg);
+  }
+
+  .language__button {
+    padding: 1.2rem;
   }
 
   .units__fieldset {

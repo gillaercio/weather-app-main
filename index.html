@@ -17,47 +17,81 @@
         <img src="assets/images/logo.svg" alt="Weather Now" class="logo__img">
       </div>
       
-      <div class="units">
-        <button type="button" class="units__button" aria-expanded="false" aria-controls="units-menu" aria-label="Units option menu">
-          <img src="assets/images/icon-units.svg" alt="" class="units__icon-unit">
-          <span class="units__span">Units</span>
-          <img src="assets/images/icon-dropdown.svg" alt="" class="units__icon-dropdown">
-        </button>
-
-        <div id="units-menu" class="units__menu" hidden>
-          <button type="button" class="units__toggle">Switch to Imperial</button>
-          <fieldset class="units__fieldset">
-            <legend class="units__title">Temperature</legend>
-            <label>
-              <input type="radio" name="temperature" value="celsius" checked>Celsius (°C)
-            </label>
-
-            <label>
-              <input type="radio" name="temperature" value="fahrenheit">Fahrenheit (°F)
-            </label>
-          </fieldset>
-
-          <fieldset class="units__fieldset">
-            <legend class="units__title">Wind Speed</legend>
-            <label>
-              <input type="radio" name="wind" value="km/h" checked>km/h
-            </label>
-
-            <label>
-              <input type="radio" name="wind" value="mph">mph
-            </label>
-          </fieldset>
-
-          <fieldset class="units__fieldset">
-            <legend class="units__title">Precipitation</legend>
+      <div class="header__controls">
+        <div class="units">
+          <button type="button" class="units__button" aria-expanded="false" aria-controls="units-menu" aria-label="Units option menu">
+            <img src="assets/images/icon-units.svg" alt="" class="units__icon-unit">
+            <span class="units__span">Units</span>
+            <img src="assets/images/icon-dropdown.svg" alt="" class="units__icon-dropdown">
+          </button>
+          <div id="units-menu" class="units__menu" hidden>
+            <button type="button" class="units__toggle">Switch to Imperial</button>
+            <fieldset class="units__fieldset">
+              <legend class="units__title">Temperature</legend>
               <label>
-                <input type="radio" name="precipitation" value="mm" checked>Millimeters (mm)
+                <input type="radio" name="temperature" value="celsius" checked>Celsius (°C)
               </label>
-
               <label>
-                <input type="radio" name="precipitation" value="in">Inches (in)
+                <input type="radio" name="temperature" value="fahrenheit">Fahrenheit (°F)
               </label>
-          </fieldset>
+            </fieldset>
+            <fieldset class="units__fieldset">
+              <legend class="units__title">Wind Speed</legend>
+              <label>
+                <input type="radio" name="wind" value="km/h" checked>km/h
+              </label>
+              <label>
+                <input type="radio" name="wind" value="mph">mph
+              </label>
+            </fieldset>
+            <fieldset class="units__fieldset">
+              <legend class="units__title">Precipitation</legend>
+                <label>
+                  <input type="radio" name="precipitation" value="mm" checked>Millimeters (mm)
+                </label>
+                <label>
+                  <input type="radio" name="precipitation" value="in">Inches (in)
+                </label>
+            </fieldset>
+          </div>
+        </div>
+        
+        <div class="language">
+          <button type="button" class="language__button" aria-expanded="false" aria-controls="language-menu">
+            EN
+          </button>
+        
+          <div id="language-menu" class="language__menu" hidden>
+            <label class="language__option">
+              <input type="radio" name="language" value="en" checked>
+              <span>English</span>
+            </label>
+        
+            <label class="language__option">
+              <input type="radio" name="language" value="es">
+              <span>Español</span>
+            </label>
+        
+            <label class="language__option">
+              <input type="radio" name="language" value="it">
+              <span>Italiano</span>
+            </label>
+        
+            <label class="language__option">
+              <input type="radio" name="language" value="fr">
+              <span>Français</span>
+            </label>
+        
+            <label class="language__option">
+              <input type="radio" name="language" value="de">
+              <span>Deutsch</span>
+            </label>
+        
+            <label class="language__option">
+              <input type="radio" name="language" value="pt">
+              <span>Português</span>
+            </label>
+          </div>
         </div>
       </div>
     </div>
