@@ -36,17 +36,28 @@ export function clearDropdown() {
 }
 
 export function clearUIForLoading() {
+  const weatherAppMain = document.querySelector(".weather-app-main");
   const currentLocation = document.querySelector(".current-location__description");
   const currentTemperature = document.querySelector(".current-temperature__value");
   const currentDate = document.querySelector(".current-date");
   const currentIcon = document.querySelector(".current-temperature__icon");
+  const currentResultValues = document.querySelectorAll(".current-result__value");
+  const dailyForecastItems = document.querySelectorAll(".daily-forecast__item");
+  const hourlyForecastItems = document.querySelectorAll(".hourly-forecast__item");
   const hourlyForecastDayText = document.querySelector(".hourly-forecast__day");
   const hourlyList = document.querySelector(".hourly-forecast__list");
-  const dailyForecastItems = document.querySelectorAll(".daily-forecast__item");
+
+  if (weatherAppMain) {
+    weatherAppMain.classList.add("is-loading");
+  }
 
   if (currentLocation) currentLocation.textContent = "";
   if (currentTemperature) currentTemperature.textContent = "";
   if (currentDate) currentDate.textContent = "";
+
+  currentResultValues.forEach((item) => {
+    item.textContent = "-";
+  });
 
   if (currentIcon) {
     currentIcon.src = "assets/images/icon-loading.svg";
@@ -63,7 +74,7 @@ export function clearUIForLoading() {
     if (tempMax) tempMax.textContent = "";
     if (tempMin) tempMin.textContent = "";
     if (icon) {
-      icon.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxIiBoZWlnaHQ9IjEiLz4";
+      icon.src = "";
       icon.alt = "";
     }
   });
@@ -71,6 +82,19 @@ export function clearUIForLoading() {
   if (hourlyForecastDayText) {
     hourlyForecastDayText.textContent = "-";
   }
+
+  hourlyForecastItems.forEach((item) => {
+    const time = item.querySelector(".hourly-forecast__time");
+    const temp = item.querySelector(".hourly-forecast__temperature");
+    const icon = item.querySelector(".hourly-forecast__icon");
+
+    if (time) time.textContent = "";
+    if (temp) temp.textContent = "";
+    if (icon) {
+      icon.src = "";
+      icon.alt = "";
+    }
+  });
 
   if (hourlyList) {
     hourlyList.innerHTML = "";
@@ -100,6 +124,10 @@ export function setUIState(state, message = "") {
     retryButton.style.display = isVisible ? "flex" : "none";
   };
 
+  if (weatherAppMain) {
+    weatherAppMain.classList.remove("is-loading");
+  }
+
   if (errorMessage) errorMessage.textContent = "";
   if (inputForm) inputForm.disabled = false;
   if (submitButton) submitButton.disabled = false;
@@ -120,6 +148,7 @@ export function setUIState(state, message = "") {
   }
 
   if (state === "success") {
+    if (weatherAppMain) weatherAppMain.classList.remove("is-loading");
     if (headerTitle) headerTitle.classList.remove("hidden");
     if (form) form.classList.remove("hidden");
     if (weatherAppMain) weatherAppMain.classList.remove("hidden");
@@ -128,6 +157,7 @@ export function setUIState(state, message = "") {
   }
 
   if (state === "api-error") {
+    if (weatherAppMain) weatherAppMain.classList.remove("is-loading");
     updateRetryButton(true);
 
     if (headerTitle) headerTitle.classList.add("hidden");
@@ -137,11 +167,38 @@ export function setUIState(state, message = "") {
     if (apiErrorSection) {
       apiErrorSection.classList.remove("error-state--no-results");
       apiErrorSection.classList.remove("hidden");
+
+      const title = apiErrorSection.querySelector(".error-state__title");
+      const description = apiErrorSection.querySelector(".error-state__description");
+      const retryButton = apiErrorSection.querySelector("#retry-button");
+
+      if (title) title.textContent = getTranslation("apiErrorTitle");
+      if (description) description.textContent = getTranslation("apiErrorDescription");
+      if (retryButton) {
+        let icon = retryButton.querySelector(".button__icon");
+        if (!icon) {
+          icon = document.createElement("img");
+          icon.src = "assets/images/icon-retry.svg";
+          icon.alt = "";
+          icon.className = "button__icon";
+          retryButton.prepend(icon);
+        }
+
+        let label = retryButton.querySelector(".retry-label");
+        if (!label) {
+          label = document.createElement("span");
+          label.className = "retry-label";
+          retryButton.appendChild(label);
+        }
+
+        label.textContent = getTranslation("retryButton");
+      }
     }
     return;
   }
 
   if (state === "no-results") {
+    if (weatherAppMain) weatherAppMain.classList.remove("is-loading");
     updateRetryButton(false);
 
     if (headerTitle) headerTitle.classList.remove("hidden");
@@ -154,8 +211,8 @@ export function setUIState(state, message = "") {
       const title = apiErrorSection.querySelector(".error-state__title");
       const description = apiErrorSection.querySelector(".error-state__description");
 
-      if (title) title.textContent = getTranslation("noResults");
-      if (description) description.textContent = "";
+      if (title) title.textContent = getTranslation("noResultsTitle");
+      if (description) description.textContent = getTranslation("noResultsDescription");
 
       apiErrorSection.classList.remove("hidden");
     }

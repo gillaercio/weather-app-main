@@ -68,6 +68,32 @@ function syncLanguageUI() {
   if (hourlyForecastTitle) {
     hourlyForecastTitle.textContent = getTranslation("hourlyForecast");
   }
+
+  syncRetryButtonLanguage();
+}
+
+function syncRetryButtonLanguage() {
+  const retryButton = document.querySelector("#retry-button");
+
+  if (!retryButton) return;
+
+  let icon = retryButton.querySelector(".button__icon");
+  if (!icon) {
+    icon = document.createElement("img");
+    icon.src = "assets/images/icon-retry.svg";
+    icon.alt = "";
+    icon.className = "button__icon";
+    retryButton.prepend(icon);
+  }
+
+  let label = retryButton.querySelector(".retry-label");
+  if (!label) {
+    label = document.createElement("span");
+    label.className = "retry-label";
+    retryButton.appendChild(label);
+  }
+
+  label.textContent = getTranslation("retryButton");
 }
 
 function toggleLanguageMenu(forceOpen) {
