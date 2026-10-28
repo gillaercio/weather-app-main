@@ -211,8 +211,8 @@ export function setUIState(state, message = "") {
       const title = apiErrorSection.querySelector(".error-state__title");
       const description = apiErrorSection.querySelector(".error-state__description");
 
-      if (title) title.textContent = getTranslation("noResultsTitle");
-      if (description) description.textContent = getTranslation("noResultsDescription");
+      if (title) title.textContent = "";
+      if (description) description.textContent = getTranslation("noResults");
 
       apiErrorSection.classList.remove("hidden");
     }
